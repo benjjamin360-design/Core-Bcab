@@ -1,1162 +1,1103 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Core Vocab</title>
-    
-    <!-- PWA風のメタタグ -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Core Vocab">
-    <meta name="theme-color" content="#f2f2f7">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Core Vocab Practical</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Core Vocab">
+  <meta name="theme-color" content="#f4f5f7">
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --text: #17181c;
+      --muted: #6b7280;
+      --line: #e6e8ee;
+      --blue: #1d74f5;
+      --indigo: #4f46e5;
+      --green: #1f9d55;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --shadow: 0 20px 60px rgba(18, 24, 40, .12), 0 2px 8px rgba(18, 24, 40, .06);
+      --radius: 8px;
+    }
 
-        :root {
-            /* iOS風のカラーパレット */
-            --bg-color: #f2f2f7;
-            --card-bg: #ffffff;
-            --text-main: #1c1c1e;
-            --text-sub: #8e8e93;
-            --blue: #007aff;
-            
-            /* 理解度カラー */
-            --status-none: #e5e5ea;
-            --status-weak: #ff3b30;
-            --status-good: #ff9500;
-            --status-perfect: #34c759;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Noto Sans JP', sans-serif;
-            background:
-                radial-gradient(circle at 50% 0%, rgba(255,255,255,0.92) 0, rgba(255,255,255,0) 34%),
-                linear-gradient(180deg, #f8f8fb 0%, #eef2f8 44%, #f7f3ee 100%);
-            color: var(--text-main);
-            /* iOS Safariのバウンススクロールや選択を制御 */
-            overscroll-behavior-y: none;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-
-        /* セーフエリア対応 */
-        .pt-safe { padding-top: max(4.6rem, calc(env(safe-area-inset-top) + 1.2rem)); }
-        .pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
-
-        .app-header {
-            min-height: 7.2rem;
-            align-items: flex-start;
-        }
-
-        .app-main {
-            padding-bottom: max(7.2rem, calc(env(safe-area-inset-bottom) + 6.4rem));
-        }
-
-        .learning-card {
-            height: min(67dvh, calc(100dvh - 14.5rem));
-            min-height: 28.5rem;
-            max-height: 39rem;
-        }
-        
-        /* スクロールバー非表示（でもスクロールは可能） */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* カードの3Dアニメーション設定 */
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        .transform-style-3d {
-            transform-style: preserve-3d;
-        }
-        .backface-hidden {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
-        
-        /* カードコンテナ */
-        .flashcard {
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-            will-change: transform;
-            touch-action: pan-y;
-        }
-        .flashcard.is-flipped {
-            transform: rotateY(180deg);
-        }
-        .flashcard.is-dragging {
-            transition: transform 0.08s ease-out;
-        }
-
-        /* カードのシャドウ */
-        .card-shadow {
-            box-shadow: 0 24px 60px -22px rgba(31, 41, 55, 0.28), 0 2px 8px rgba(31,41,55,0.06);
-        }
-
-        /* アニメーション用クラス */
-        .active-scale:active {
-            transform: scale(0.95);
-            transition: transform 0.1s;
-        }
-
-        /* 画像プレースホルダーのグラデーション */
-        .img-placeholder {
-            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-        }
-        
-        /* モーダル用トランジション */
-        .modal-enter { opacity: 0; transform: translateY(10px); }
-        .modal-enter-active { opacity: 1; transform: translateY(0); transition: all 0.3s ease-out; }
-        .modal-exit { opacity: 1; }
-        .modal-exit-active { opacity: 0; pointer-events: none; transition: all 0.2s ease-in; }
-
-        .stat-chip {
-            background: #f8f8fb;
-            border: 1px solid #ededf2;
-        }
-
-        .status-dock {
-            box-shadow: 0 18px 40px -22px rgba(31, 41, 55, 0.45);
-        }
-
-        .app-footer {
-            bottom: max(1.15rem, calc(env(safe-area-inset-bottom) + 0.75rem));
-        }
-
-        .status-label {
-            line-height: 1;
-        }
-
-        @media (max-height: 760px) {
-            .pt-safe { padding-top: max(3.9rem, calc(env(safe-area-inset-top) + 0.9rem)); }
-            .app-header { min-height: 6.3rem; }
-            .learning-card {
-                height: calc(100dvh - 13.2rem);
-                min-height: 24rem;
-            }
-        }
-
-        .settings-modal-safe {
-            padding-top: max(1rem, calc(env(safe-area-inset-top) + 0.8rem));
-        }
-
-        .settings-sheet {
-            max-height: calc(100dvh - max(1rem, calc(env(safe-area-inset-top) + 0.8rem)));
-        }
-    </style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overscroll-behavior-y: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button, input, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    .app {
+      width: min(100%, 460px);
+      height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      overflow: hidden;
+      position: relative;
+    }
+    .topbar {
+      padding: max(14px, env(safe-area-inset-top)) 16px 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+    .brand { min-width: 0; }
+    .brand h1 { margin: 0; font-size: 18px; line-height: 1.15; letter-spacing: 0; }
+    .brand p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      padding: 0 10px;
+      border-radius: 999px;
+      color: #4b5563;
+      background: #e9edf3;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #fff;
+      color: #374151;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, .08);
+    }
+    .icon-btn:active, .nav-btn:active, .status-btn:active, .primary-btn:active, .chip:active { transform: scale(.96); }
+    .search-row {
+      padding: 0 16px 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+    .search {
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 11px;
+      color: var(--muted);
+    }
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      min-width: 0;
+    }
+    .select {
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: #374151;
+      padding: 0 10px;
+      max-width: 138px;
+    }
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 4px;
+      margin: 0 16px 10px;
+      background: #e8ebf1;
+      border-radius: var(--radius);
+      flex: 0 0 auto;
+    }
+    .tab {
+      min-height: 34px;
+      border-radius: 6px;
+      color: #5b6472;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .tab.active {
+      background: #fff;
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, .08);
+    }
+    .stage {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 0 16px 10px;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-wrap {
+      flex: 1;
+      min-height: 0;
+      perspective: 1000px;
+      display: flex;
+    }
+    .flashcard {
+      width: 100%;
+      min-height: 360px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform .5s cubic-bezier(.22, .61, .36, 1);
+    }
+    .flashcard.flipped { transform: rotateY(180deg); }
+    .face {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      backface-visibility: hidden;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .back { transform: rotateY(180deg); }
+    .visual {
+      height: 39%;
+      min-height: 128px;
+      margin: 12px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #dce8ff, #d9f4e7 52%, #fff1c9);
+    }
+    .visual::before {
+      content: "";
+      width: 120px;
+      height: 120px;
+      border: 2px solid rgba(255,255,255,.54);
+      transform: rotate(34deg);
+      position: absolute;
+    }
+    .visual .letter {
+      font-size: clamp(54px, 18vw, 86px);
+      font-weight: 800;
+      color: rgba(255,255,255,.78);
+      text-shadow: 0 10px 30px rgba(42, 61, 94, .22);
+      z-index: 1;
+    }
+    .category-badge {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      min-height: 26px;
+      padding: 0 9px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: rgba(255,255,255,.82);
+      color: #374151;
+      font-size: 11px;
+      font-weight: 800;
+      z-index: 2;
+    }
+    .front-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 14px 24px 22px;
+      min-height: 0;
+    }
+    .word {
+      margin: 0;
+      font-size: clamp(31px, 9vw, 42px);
+      line-height: 1.05;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+    .pos { margin: 9px 0 0; color: var(--muted); font-size: 13px; font-weight: 800; text-transform: uppercase; }
+    .hint { margin: 18px 0 0; color: #64748b; font-size: 13px; }
+    .speak {
+      margin-top: 20px;
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      background: #e9f2ff;
+      color: var(--blue);
+      display: grid;
+      place-items: center;
+    }
+    .back-scroll {
+      height: 100%;
+      overflow-y: auto;
+      padding: 22px;
+    }
+    .back h2 { margin: 0; font-size: 25px; text-align: center; letter-spacing: 0; overflow-wrap: anywhere; }
+    .meaning { margin: 6px 0 18px; text-align: center; color: var(--blue); font-size: 18px; font-weight: 800; }
+    .info-box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      background: var(--panel-soft);
+      margin-bottom: 14px;
+    }
+    .label { margin: 0 0 7px; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+    .info-box p:last-child { margin-bottom: 0; }
+    .core { margin: 0; font-size: 15px; line-height: 1.7; }
+    .example-en { margin: 0 0 8px; font-size: 16px; line-height: 1.45; font-family: Georgia, serif; font-style: italic; }
+    .example-ja { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .mini-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .quiz-panel, .stats-panel {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .quiz-question { margin: 4px 0 2px; font-size: clamp(30px, 10vw, 42px); line-height: 1.1; letter-spacing: 0; overflow-wrap: anywhere; }
+    .quiz-sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+    .choices { display: grid; gap: 10px; }
+    .choice {
+      min-height: 52px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: #1f2937;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 700;
+    }
+    .choice.correct { border-color: rgba(31,157,85,.42); background: #ecfdf3; color: #166534; }
+    .choice.wrong { border-color: rgba(239,68,68,.38); background: #fff1f2; color: #991b1b; }
+    .quiz-result { min-height: 24px; margin: 12px 0 0; font-weight: 800; color: #374151; }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 13px;
+      background: var(--panel-soft);
+    }
+    .stat b { display: block; font-size: 24px; line-height: 1; margin-bottom: 6px; }
+    .stat span { color: var(--muted); font-size: 12px; font-weight: 800; }
+    .bar { height: 9px; border-radius: 999px; background: #edf0f5; overflow: hidden; margin: 14px 0; display: flex; }
+    .bar i { display: block; height: 100%; }
+    .word-list { margin-top: 14px; display: grid; gap: 8px; }
+    .word-row {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      background: #fff;
+    }
+    .word-row strong { overflow-wrap: anywhere; }
+    .word-row span { color: var(--muted); font-size: 12px; }
+    .footer {
+      padding: 10px 16px max(14px, env(safe-area-inset-bottom));
+      border-top: 1px solid rgba(203, 213, 225, .6);
+      background: rgba(244,245,247,.92);
+      backdrop-filter: blur(14px);
+      flex: 0 0 auto;
+    }
+    .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+    .status-btn {
+      min-height: 50px;
+      border-radius: 10px;
+      background: transparent;
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      gap: 3px;
+    }
+    .status-btn.active { background: #fff; color: #111827; box-shadow: 0 1px 4px rgba(15,23,42,.08); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; opacity: .45; }
+    .status-btn.active .dot { opacity: 1; }
+    .nav-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .nav-btn, .primary-btn {
+      min-height: 50px;
+      border-radius: 12px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .nav-btn { background: #fff; color: #374151; box-shadow: 0 1px 4px rgba(15,23,42,.08); }
+    .primary-btn { background: var(--blue); color: #fff; }
+    .modal {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      align-items: flex-end;
+      background: rgba(15, 23, 42, .42);
+      backdrop-filter: blur(8px);
+    }
+    .modal.open { display: flex; }
+    .sheet {
+      width: 100%;
+      max-height: 85dvh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 18px 18px 0 0;
+      padding: 20px 18px max(22px, env(safe-area-inset-bottom));
+      box-shadow: 0 -20px 60px rgba(15, 23, 42, .22);
+    }
+    .sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .sheet h2 { margin: 0; font-size: 20px; }
+    .setting-block { border-top: 1px solid var(--line); padding: 15px 0; }
+    .setting-title { margin: 0 0 10px; font-weight: 900; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .chip.active { background: #111827; border-color: #111827; color: #fff; }
+    .switch-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .switch-row p { margin: 0; }
+    .switch-row small { color: var(--muted); }
+    .switch { position: relative; width: 48px; height: 28px; flex: 0 0 auto; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: #cbd5e1;
+      transition: .2s;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      left: 2px;
+      top: 2px;
+      border-radius: 50%;
+      background: #fff;
+      transition: .2s;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, .25);
+    }
+    .switch input:checked + .slider { background: var(--green); }
+    .switch input:checked + .slider::before { transform: translateX(20px); }
+    .file-label {
+      min-height: 44px;
+      border-radius: 10px;
+      background: #eef5ff;
+      color: #1d4ed8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 900;
+      cursor: pointer;
+      border: 1px solid #dbeafe;
+    }
+    .hidden { display: none !important; }
+    .muted { color: var(--muted); }
+    @media (max-height: 710px) {
+      .visual { height: 33%; min-height: 100px; }
+      .flashcard { min-height: 300px; }
+      .front-main { padding-bottom: 16px; }
+      .hint { margin-top: 10px; }
+      .speak { margin-top: 12px; }
+    }
+  </style>
 </head>
-<body class="h-[100dvh] w-full flex justify-center overflow-hidden">
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1>Core Vocab</h1>
+        <p id="subtitle">実用英単語 60</p>
+      </div>
+      <div class="top-actions">
+        <span id="progressText" class="pill">1 / 60</span>
+        <button id="settingsBtn" class="icon-btn" aria-label="設定">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.04.04a2 2 0 1 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.37a1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.08a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.88.34l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.63 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.08a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.88l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.63a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.08a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.88-.34l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.37 9c.13.38.5 1 1.55 1H21a2 2 0 1 1 0 4h-.08a1.7 1.7 0 0 0-1.52 1Z"/></svg>
+        </button>
+      </div>
+    </header>
 
-    <!-- メインアプリコンテナ（スマホ幅に制限） -->
-    <div class="w-full max-w-[430px] h-full flex flex-col relative bg-transparent">
-        
-        <!-- ヘッダー -->
-        <header class="app-header flex justify-between px-5 pb-3 pt-safe z-10 shrink-0">
-            <h1 class="text-lg font-semibold tracking-tight text-gray-800">Core Vocab</h1>
-            <div class="flex items-center gap-3">
-                <span id="progress-text" class="text-sm font-medium text-gray-500 bg-gray-200/60 px-3 py-1 rounded-full">1 / 10</span>
-                <button id="settings-btn" type="button" aria-label="学習設定を開く" class="p-2 -mr-2 active-scale text-gray-600 hover:text-gray-900">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                    </svg>
-                </button>
-            </div>
-        </header>
-
-        <!-- メイン：カード領域 -->
-        <main class="app-main flex-1 w-full px-4 perspective-1000 flex flex-col justify-center items-center relative z-0">
-            <!-- カード本体 -->
-            <div id="flashcard" class="learning-card flashcard w-full relative transform-style-3d cursor-pointer">
-                
-                <!-- 表面 (Front) -->
-                <div class="card-front absolute inset-0 bg-white/95 rounded-[32px] card-shadow flex flex-col backface-hidden overflow-hidden">
-                    <!-- 画像エリア -->
-                    <div id="card-image-area" class="w-full h-[62%] relative p-3 pb-0">
-                        <div class="w-full h-full rounded-[24px] overflow-hidden img-placeholder flex items-center justify-center relative">
-                            <img id="card-img" src="" alt="Core Image" class="w-full h-full object-cover hidden" onerror="this.style.display='none'">
-                            <span id="card-img-fallback" class="text-white text-6xl font-bold opacity-50 mix-blend-overlay">O</span>
-                            <!-- プレースホルダー時のアイコン -->
-                            <svg class="absolute bottom-3 right-3 text-white/50 w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                    </div>
-                    
-                    <!-- テキストエリア -->
-                    <div id="card-front-text" class="flex-1 flex flex-col items-center justify-center px-6 py-7 text-center">
-                        <h2 id="card-word" class="text-[38px] sm:text-4xl font-bold tracking-tight text-gray-900 mb-1 leading-tight select-text">objective</h2>
-                        <p id="card-pos" class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-5">adjective / noun</p>
-                        
-                        <!-- 音声再生ボタン（表面） -->
-                        <button id="btn-speak-word" class="p-3 bg-blue-50 text-blue-500 rounded-full active-scale mt-auto" aria-label="発音を聞く">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 裏面 (Back) -->
-                <div class="card-back absolute inset-0 bg-white/95 rounded-[32px] card-shadow flex flex-col backface-hidden rotate-y-180">
-                    <div class="p-6 h-full flex flex-col overflow-y-auto no-scrollbar">
-                        <div class="text-center mb-6">
-                            <h2 id="card-word-back" class="text-2xl font-bold text-gray-900 mb-1 select-text">objective</h2>
-                            <p id="card-meaning" class="text-lg font-medium text-[#007aff] select-text">客観的な / 目的</p>
-                        </div>
-                        
-                        <!-- コアイメージ説明 -->
-                        <div class="bg-gray-50 rounded-2xl p-4 mb-5 border border-gray-100">
-                            <div class="flex items-center gap-2 mb-2 text-gray-500">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><line x1="21.17" y1="8" x2="12" y2="8"></line><line x1="3.95" y1="6.06" x2="8.54" y2="14"></line><line x1="10.88" y1="21.94" x2="15.46" y2="14"></line></svg>
-                                <span class="text-xs font-bold tracking-wider uppercase">Core Image</span>
-                            </div>
-                            <p id="card-core" class="text-[15px] leading-relaxed text-gray-700 select-text font-medium">
-                                感情ではなく、対象そのものをまっすぐ見るイメージ。
-                            </p>
-                        </div>
-
-                        <!-- 例文 -->
-                        <div class="mt-auto">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs font-bold tracking-wider uppercase text-gray-400">Example</span>
-                                <button id="btn-speak-example" class="p-1.5 bg-gray-100 text-gray-600 rounded-full active-scale">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                                </button>
-                            </div>
-                            <p id="card-ex-en" class="text-[16px] font-medium leading-snug text-gray-900 mb-2 select-text font-serif italic">
-                                "We need to be objective about the results."
-                            </p>
-                            <p id="card-ex-ja" class="text-[14px] text-gray-500 select-text">
-                                私たちはその結果について客観的である必要がある。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-
-        <!-- フッター（操作UI） -->
-        <footer class="app-footer absolute left-0 right-0 w-full shrink-0 z-20 pointer-events-none">
-            <div class="px-4 pointer-events-auto">
-                
-                <!-- 理解度ボタン -->
-                <div class="status-dock flex justify-between gap-2 rounded-[26px] bg-white/78 backdrop-blur-xl border border-white/75 p-2">
-                    <button class="status-btn flex-1 min-w-0 flex flex-col items-center justify-center h-[64px] rounded-[20px] active-scale transition-colors" data-status="none">
-                        <div class="w-3.5 h-3.5 rounded-full bg-[#e5e5ea] mb-2"></div>
-                        <span class="status-label text-[12px] font-bold text-gray-400">未学習</span>
-                    </button>
-                    <button class="status-btn flex-1 min-w-0 flex flex-col items-center justify-center h-[64px] rounded-[20px] active-scale transition-colors" data-status="weak">
-                        <div class="w-3.5 h-3.5 rounded-full bg-[#ff3b30] mb-2 opacity-40"></div>
-                        <span class="status-label text-[12px] font-bold text-gray-400">苦手</span>
-                    </button>
-                    <button class="status-btn flex-1 min-w-0 flex flex-col items-center justify-center h-[64px] rounded-[20px] active-scale transition-colors" data-status="good">
-                        <div class="w-3.5 h-3.5 rounded-full bg-[#ff9500] mb-2 opacity-40"></div>
-                        <span class="status-label text-[12px] font-bold text-gray-400">理解</span>
-                    </button>
-                    <button class="status-btn flex-1 min-w-0 flex flex-col items-center justify-center h-[64px] rounded-[20px] active-scale transition-colors" data-status="perfect">
-                        <div class="w-3.5 h-3.5 rounded-full bg-[#34c759] mb-2 opacity-40"></div>
-                        <span class="status-label text-[12px] font-bold text-gray-400">定着</span>
-                    </button>
-                </div>
-            </div>
-        </footer>
-
-        <!-- 設定モーダル（オーバーレイ） -->
-        <div id="settings-modal" class="settings-modal-safe absolute inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex-col justify-end overflow-y-auto no-scrollbar">
-            <div class="settings-sheet bg-white w-full overflow-y-auto no-scrollbar rounded-t-3xl pb-safe pt-6 px-6 shadow-2xl modal-content transform translate-y-full transition-transform duration-300">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold">学習設定</h3>
-                    <button id="close-settings" type="button" aria-label="学習設定を閉じる" class="p-2 bg-gray-100 rounded-full active-scale">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-                
-                <div class="space-y-5 mb-8">
-                    <!-- 進捗サマリー -->
-                    <div class="py-2 border-b border-gray-100">
-                        <p class="font-semibold text-gray-900 mb-3">今日の状態</p>
-                        <div class="grid grid-cols-4 gap-2">
-                            <div class="stat-chip rounded-2xl px-2 py-3 text-center">
-                                <p id="stat-none" class="text-lg font-bold text-gray-900">0</p>
-                                <p class="text-[10px] font-semibold text-gray-400">未学習</p>
-                            </div>
-                            <div class="stat-chip rounded-2xl px-2 py-3 text-center">
-                                <p id="stat-weak" class="text-lg font-bold text-[#ff3b30]">0</p>
-                                <p class="text-[10px] font-semibold text-gray-400">苦手</p>
-                            </div>
-                            <div class="stat-chip rounded-2xl px-2 py-3 text-center">
-                                <p id="stat-good" class="text-lg font-bold text-[#ff9500]">0</p>
-                                <p class="text-[10px] font-semibold text-gray-400">理解</p>
-                            </div>
-                            <div class="stat-chip rounded-2xl px-2 py-3 text-center">
-                                <p id="stat-perfect" class="text-lg font-bold text-[#34c759]">0</p>
-                                <p class="text-[10px] font-semibold text-gray-400">定着</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 学習モード (複数選択ボタン) -->
-                    <div class="py-2 border-b border-gray-100">
-                        <p class="font-semibold text-gray-900 mb-3">表示するカード <span class="text-xs text-gray-500 font-normal ml-2">複数選択可</span></p>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="filter-btn px-4 py-1.5 rounded-full text-sm font-medium border active-scale transition-colors bg-gray-800 text-white border-gray-800" data-filter="none">未学習</button>
-                            <button class="filter-btn px-4 py-1.5 rounded-full text-sm font-medium border active-scale transition-colors bg-gray-800 text-white border-gray-800" data-filter="weak">苦手</button>
-                            <button class="filter-btn px-4 py-1.5 rounded-full text-sm font-medium border active-scale transition-colors bg-gray-800 text-white border-gray-800" data-filter="good">理解</button>
-                            <button class="filter-btn px-4 py-1.5 rounded-full text-sm font-medium border active-scale transition-colors bg-gray-800 text-white border-gray-800" data-filter="perfect">定着</button>
-                        </div>
-                    </div>
-
-                    <!-- シャッフル切替 -->
-                    <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                        <div>
-                            <p class="font-semibold text-gray-900">シャッフル再生</p>
-                            <p class="text-xs text-gray-500">ランダムな順番で出題します</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="toggle-shuffle" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                        </label>
-                    </div>
-                    
-                    <!-- 画像表示切替 -->
-                    <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                        <div>
-                            <p class="font-semibold text-gray-900">画像を表示</p>
-                            <p class="text-xs text-gray-500">オフにすると単語のみに集中できます</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="toggle-image" class="sr-only peer" checked>
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                        </label>
-                    </div>
-
-                    <!-- 自動送り切替 -->
-                    <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                        <div>
-                            <p class="font-semibold text-gray-900">理解度を選んだら次へ</p>
-                            <p class="text-xs text-gray-500">テンポよくカードを進めます</p>
-                        </div>
-                        <label id="toggle-auto-advance-label" class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="toggle-auto-advance" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                        </label>
-                    </div>
-
-                    <!-- CSVインポート (簡易) -->
-                    <div class="py-2">
-                        <p class="font-semibold text-gray-900 mb-2">単語データの追加 (CSV)</p>
-                        <p class="text-xs text-gray-500 mb-3">word, partOfSpeech, meaningJa, coreImageText, exampleEn, exampleJa, imagePrompt, imagePath の形式</p>
-                        <input type="file" id="csv-upload" accept=".csv" class="hidden">
-                        <label for="csv-upload" class="flex items-center justify-center gap-2 w-full py-3 bg-blue-50 text-blue-600 rounded-xl font-semibold active-scale cursor-pointer border border-blue-100">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                            CSVファイルを選択
-                        </label>
-                    </div>
-
-                    <!-- データ操作 -->
-                    <div class="grid grid-cols-2 gap-3 pt-1">
-                        <button id="btn-export-csv" type="button" class="flex items-center justify-center gap-2 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold active-scale">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                            書き出し
-                        </button>
-                        <button id="btn-reset-progress" type="button" class="flex items-center justify-center gap-2 py-3 bg-red-50 text-red-600 rounded-xl font-semibold active-scale">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-                            進捗リセット
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
+    <div class="search-row">
+      <label class="search" aria-label="検索">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+        <input id="searchInput" type="search" placeholder="単語・意味・例文を検索">
+      </label>
+      <select id="categorySelect" class="select" aria-label="カテゴリ">
+        <option value="all">全カテゴリ</option>
+      </select>
     </div>
 
-    <!-- JavaScript ロジック -->
-    <script>
-        // --- 1. 初期データ定義 ---
-        // ※ 実際の運用では、画像ファイルを assets/images/ フォルダに配置し、
-        // imagePathを "assets/images/objective.png" のように指定します。
-        const initialWords = [
-            { id: 1, word: "objective", partOfSpeech: "adjective / noun", meaningJa: "客観的な / 目的", coreImageText: "感情ではなく、対象そのものをまっすぐ見るイメージ。", exampleEn: "We need to be objective about the results.", exampleJa: "私たちはその結果について客観的である必要がある。", imagePrompt: "A hand-drawn workbook illustration of examining facts clearly and without bias.", imagePath: "assets/images/objective.png" },
-            { id: 2, word: "notice", partOfSpeech: "verb / noun", meaningJa: "気づく / 通知", coreImageText: "視覚や感覚を通して「ハッ」と何かの存在を認識するイメージ。", exampleEn: "Did you notice any changes in his behavior?", exampleJa: "彼の行動に何か変化があることに気づきましたか？", imagePrompt: "A hand-drawn workbook illustration of suddenly spotting a small important detail.", imagePath: "assets/images/notice.png" },
-            { id: 3, word: "realize", partOfSpeech: "verb", meaningJa: "悟る、実感する / 実現する", coreImageText: "頭の中で状況がつながり「なるほど！」と腑に落ちるイメージ。", exampleEn: "I didn't realize how late it was.", exampleJa: "どんなに遅い時間になっているか、全く実感していなかった。", imagePrompt: "A hand-drawn workbook illustration of puzzle pieces connecting into an ah-ha moment.", imagePath: "assets/images/realize.png" },
-            { id: 4, word: "figure out", partOfSpeech: "phrasal verb", meaningJa: "理解する、解決策を見つける", coreImageText: "パズルを解くように、考えて答えを導き出すイメージ。", exampleEn: "We need to figure out a way to solve this problem.", exampleJa: "この問題を解決する方法を見つけ出す必要がある。", imagePrompt: "A hand-drawn workbook illustration of solving a maze or puzzle by thinking.", imagePath: "assets/images/figure-out.png" },
-            { id: 5, word: "through", partOfSpeech: "preposition / adverb", meaningJa: "～を通り抜けて、～を通して", coreImageText: "トンネルのような立体的な空間の中を、一方から他方へ抜け出るイメージ。", exampleEn: "We walked through the forest.", exampleJa: "私たちは森を通り抜けて歩いた。", imagePrompt: "A hand-drawn workbook illustration of entering a tunnel and coming out the other side.", imagePath: "assets/images/through.png" },
-            { id: 6, word: "across", partOfSpeech: "preposition / adverb", meaningJa: "～を横切って、～の向こう側に", coreImageText: "平面上の端から端へ、交差して渡るイメージ。", exampleEn: "She walked across the street.", exampleJa: "彼女は通りを横切って歩いた。", imagePrompt: "A hand-drawn workbook illustration of crossing from one side to the other.", imagePath: "assets/images/across.png" },
-            { id: 7, word: "toward", partOfSpeech: "preposition", meaningJa: "～の方向へ、～に向かって", coreImageText: "到達するかどうかは関係なく、その方向を目指して進むイメージ。", exampleEn: "He is walking toward the station.", exampleJa: "彼は駅の方に向かって歩いている。", imagePrompt: "A hand-drawn workbook illustration of moving in the direction of a distant goal.", imagePath: "assets/images/toward.png" },
-            { id: 8, word: "avoid", partOfSpeech: "verb", meaningJa: "避ける", coreImageText: "嫌なものや危険なものから意図的に距離を置く、離れるイメージ。", exampleEn: "You should avoid eating too much sugar.", exampleJa: "砂糖の摂りすぎは避けるべきだ。", imagePrompt: "A hand-drawn workbook illustration of stepping around an obstacle to stay away from it.", imagePath: "assets/images/avoid.png" },
-            { id: 9, word: "compare", partOfSpeech: "verb", meaningJa: "比較する", coreImageText: "2つのものを並べて、違いや共通点を見比べるイメージ。", exampleEn: "It is difficult to compare the two options.", exampleJa: "その2つの選択肢を比較するのは難しい。", imagePrompt: "A hand-drawn workbook illustration of looking at two objects side by side to compare them.", imagePath: "assets/images/compare.png" },
-            { id: 10, word: "improve", partOfSpeech: "verb", meaningJa: "向上させる、改善する", coreImageText: "今ある状態を、さらに良い状態へと引き上げるイメージ。", exampleEn: "I want to improve my English skills.", exampleJa: "私は英語のスキルを向上させたい。", imagePrompt: "A hand-drawn workbook illustration of climbing upward steps and making progress.", imagePath: "assets/images/improve.png" }
-        ];
+    <nav class="tabs" aria-label="表示モード">
+      <button class="tab active" data-view="card">カード</button>
+      <button class="tab" data-view="quiz">クイズ</button>
+      <button class="tab" data-view="stats">統計</button>
+    </nav>
 
-        // --- 2. 状態管理 (App State) ---
-        const state = {
-            words: [],
-            displayWords: [], // シャッフル用
-            currentIndex: 0,
-            isFlipped: false,
-            settings: {
-                shuffle: false,
-                showImage: true,
-                autoAdvance: false,
-                filters: {
-                    none: true,
-                    weak: true,
-                    good: true,
-                    perfect: true
-                }
-            },
-            progress: {} // { wordId: 'none' | 'weak' | 'good' | 'perfect' }
-        };
+    <main class="stage">
+      <section id="cardView" class="card-wrap">
+        <div id="flashcard" class="flashcard">
+          <article class="face front">
+            <div id="visual" class="visual">
+              <span id="categoryBadge" class="category-badge">Basic</span>
+              <span id="letter" class="letter">O</span>
+            </div>
+            <div class="front-main">
+              <h2 id="word" class="word">objective</h2>
+              <p id="pos" class="pos">adjective</p>
+              <p class="hint">タップで意味・コアイメージを確認</p>
+              <button id="speakWordBtn" class="speak" aria-label="発音">
+                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+              </button>
+            </div>
+          </article>
+          <article class="face back">
+            <div class="back-scroll">
+              <h2 id="wordBack">objective</h2>
+              <p id="meaning" class="meaning">客観的な / 目的</p>
+              <div class="info-box">
+                <p class="label">Core Image</p>
+                <p id="core" class="core">感情ではなく、対象そのものをまっすぐ見る。</p>
+              </div>
+              <div class="info-box">
+                <div class="mini-row">
+                  <p class="label">Example</p>
+                  <button id="speakExampleBtn" class="icon-btn" aria-label="例文を発音">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+                  </button>
+                </div>
+                <p id="exampleEn" class="example-en"></p>
+                <p id="exampleJa" class="example-ja"></p>
+              </div>
+              <div class="info-box">
+                <p class="label">Practical Note</p>
+                <p id="note" class="core"></p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
 
-        // --- 3. DOM要素の取得 ---
-        const els = {
-            card: document.getElementById('flashcard'),
-            progressText: document.getElementById('progress-text'),
-            
-            // 表面
-            imageArea: document.getElementById('card-image-area'),
-            frontText: document.getElementById('card-front-text'),
-            img: document.getElementById('card-img'),
-            imgFallback: document.getElementById('card-img-fallback'),
-            word: document.getElementById('card-word'),
-            pos: document.getElementById('card-pos'),
-            btnSpeakWord: document.getElementById('btn-speak-word'),
-            
-            // 裏面
-            wordBack: document.getElementById('card-word-back'),
-            meaning: document.getElementById('card-meaning'),
-            core: document.getElementById('card-core'),
-            exEn: document.getElementById('card-ex-en'),
-            exJa: document.getElementById('card-ex-ja'),
-            btnExJa: document.getElementById('card-ex-ja'),
-            btnSpeakEx: document.getElementById('btn-speak-example'),
-            
-            // 操作
-            statusBtns: document.querySelectorAll('.status-btn'),
-            
-            // 設定モーダル
-            btnSettings: document.getElementById('settings-btn'),
-            modalSettings: document.getElementById('settings-modal'),
-            modalContent: document.querySelector('.modal-content'),
-            btnCloseSettings: document.getElementById('close-settings'),
-            filterBtns: document.querySelectorAll('.filter-btn'),
-            toggleShuffle: document.getElementById('toggle-shuffle'),
-            toggleImage: document.getElementById('toggle-image'),
-            toggleAutoAdvance: document.getElementById('toggle-auto-advance'),
-            csvUpload: document.getElementById('csv-upload'),
-            statNone: document.getElementById('stat-none'),
-            statWeak: document.getElementById('stat-weak'),
-            statGood: document.getElementById('stat-good'),
-            statPerfect: document.getElementById('stat-perfect'),
-            btnExportCsv: document.getElementById('btn-export-csv'),
-            btnResetProgress: document.getElementById('btn-reset-progress')
-        };
+      <section id="quizView" class="quiz-panel">
+        <p class="label">Meaning Quiz</p>
+        <h2 id="quizWord" class="quiz-question">objective</h2>
+        <p id="quizPos" class="quiz-sub">正しい意味を選んでください</p>
+        <div id="choices" class="choices"></div>
+        <p id="quizResult" class="quiz-result"></p>
+        <button id="nextQuizBtn" class="primary-btn" style="width:100%; margin-top: 12px;">次の問題</button>
+      </section>
 
-        const storage = {
-            get(key) {
-                try {
-                    return window.localStorage ? window.localStorage.getItem(key) : null;
-                } catch (error) {
-                    console.warn('LocalStorage is not available:', error);
-                    return null;
-                }
-            },
-            set(key, value) {
-                try {
-                    if (window.localStorage) {
-                        window.localStorage.setItem(key, value);
-                    }
-                } catch (error) {
-                    console.warn('LocalStorage save failed:', error);
-                }
-            }
-        };
+      <section id="statsView" class="stats-panel">
+        <p class="label">Progress</p>
+        <div class="stat-grid">
+          <div class="stat"><b id="statTotal">60</b><span>表示中</span></div>
+          <div class="stat"><b id="statDone">0</b><span>学習済み</span></div>
+          <div class="stat"><b id="statWeak">0</b><span>苦手</span></div>
+          <div class="stat"><b id="statPerfect">0</b><span>定着</span></div>
+        </div>
+        <div id="progressBar" class="bar"></div>
+        <p id="statsSummary" class="muted"></p>
+        <div id="wordList" class="word-list"></div>
+      </section>
+    </main>
 
-        function parseSavedJSON(value, fallback) {
-            if (!value) return fallback;
+    <footer class="footer">
+      <div class="status-grid">
+        <button class="status-btn" data-status="none"><span class="dot" style="background:#cbd5e1"></span>未学習</button>
+        <button class="status-btn" data-status="weak"><span class="dot" style="background:var(--red)"></span>苦手</button>
+        <button class="status-btn" data-status="good"><span class="dot" style="background:var(--orange)"></span>理解</button>
+        <button class="status-btn" data-status="perfect"><span class="dot" style="background:var(--green)"></span>定着</button>
+      </div>
+      <div class="nav-row">
+        <button id="prevBtn" class="nav-btn">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          前へ
+        </button>
+        <button id="nextBtn" class="primary-btn">
+          次へ
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </footer>
 
-            try {
-                return JSON.parse(value);
-            } catch (error) {
-                console.warn('Saved data is invalid and was ignored:', error);
-                return fallback;
-            }
+    <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-label="学習設定">
+      <div class="sheet">
+        <div class="sheet-head">
+          <h2>学習設定</h2>
+          <button id="closeSettingsBtn" class="icon-btn" aria-label="閉じる">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="setting-block">
+          <p class="setting-title">表示する理解度</p>
+          <div class="chips">
+            <button class="chip active" data-filter="none">未学習</button>
+            <button class="chip active" data-filter="weak">苦手</button>
+            <button class="chip active" data-filter="good">理解</button>
+            <button class="chip active" data-filter="perfect">定着</button>
+          </div>
+        </div>
+        <div class="setting-block switch-row">
+          <div>
+            <p class="setting-title">シャッフル</p>
+            <small>出題順をランダムにします</small>
+          </div>
+          <label class="switch"><input id="shuffleToggle" type="checkbox"><span class="slider"></span></label>
+        </div>
+        <div class="setting-block switch-row">
+          <div>
+            <p class="setting-title">コアイメージ表示</p>
+            <small>カード上部のビジュアルを表示します</small>
+          </div>
+          <label class="switch"><input id="visualToggle" type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="setting-block">
+          <p class="setting-title">データ管理</p>
+          <div style="display:grid; gap:10px;">
+            <button id="exportBtn" class="nav-btn" style="width:100%;">CSVを書き出す</button>
+            <button id="resetProgressBtn" class="nav-btn" style="width:100%;">進捗だけリセット</button>
+            <input id="csvInput" class="hidden" type="file" accept=".csv">
+            <label for="csvInput" class="file-label">CSVを追加インポート</label>
+          </div>
+          <p class="muted" style="font-size:12px; line-height:1.55;">形式: word, partOfSpeech, meaningJa, coreImageText, exampleEn, exampleJa, category, note</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const seedWords = [
+      {id:1,word:"objective",partOfSpeech:"adj / noun",meaningJa:"客観的な / 目的",coreImageText:"感情を横に置き、対象そのものをまっすぐ見る。",exampleEn:"We need to be objective about the results.",exampleJa:"結果について客観的に考える必要がある。",category:"Thinking",note:"会議、分析、評価でよく使う。"},
+      {id:2,word:"notice",partOfSpeech:"verb / noun",meaningJa:"気づく / 通知",coreImageText:"目や耳に入ったものを、意識が拾い上げる。",exampleEn:"Did you notice any change in his behavior?",exampleJa:"彼の行動の変化に気づきましたか。",category:"Thinking",note:"realize よりも感覚的な気づき。"},
+      {id:3,word:"realize",partOfSpeech:"verb",meaningJa:"気づく、実感する / 実現する",coreImageText:"頭の中で点がつながり、現実として理解する。",exampleEn:"I realized that I had made a mistake.",exampleJa:"自分が間違えたことに気づいた。",category:"Thinking",note:"理解が内側で起きるニュアンス。"},
+      {id:4,word:"figure out",partOfSpeech:"phrasal verb",meaningJa:"理解する、解決する",coreImageText:"ばらばらの情報を組み立てて答えを出す。",exampleEn:"We need to figure out the cause.",exampleJa:"原因を突き止める必要がある。",category:"Thinking",note:"問題解決で非常に実用的。"},
+      {id:5,word:"assume",partOfSpeech:"verb",meaningJa:"推測する、当然と思う",coreImageText:"まだ確定していないものを仮に置く。",exampleEn:"I assumed the meeting was online.",exampleJa:"会議はオンラインだと思っていた。",category:"Thinking",note:"ビジネスで誤解の説明にも使える。"},
+      {id:6,word:"consider",partOfSpeech:"verb",meaningJa:"検討する、考慮する",coreImageText:"選択肢を手の上に置いて、角度を変えて見る。",exampleEn:"Please consider my proposal.",exampleJa:"私の提案を検討してください。",category:"Thinking",note:"丁寧な依頼表現と相性がよい。"},
+      {id:7,word:"compare",partOfSpeech:"verb",meaningJa:"比較する",coreImageText:"二つ以上のものを並べて違いと共通点を見る。",exampleEn:"Let's compare the two plans.",exampleJa:"二つの計画を比較しましょう。",category:"Thinking",note:"compare A with B の形が基本。"},
+      {id:8,word:"evaluate",partOfSpeech:"verb",meaningJa:"評価する、査定する",coreImageText:"基準に照らして価値や効果を測る。",exampleEn:"We evaluated the new system.",exampleJa:"新しいシステムを評価した。",category:"Thinking",note:"review より分析的。"},
+      {id:9,word:"identify",partOfSpeech:"verb",meaningJa:"特定する、見分ける",coreImageText:"複数の中から、それが何かをはっきりさせる。",exampleEn:"Can you identify the main issue?",exampleJa:"主な問題を特定できますか。",category:"Thinking",note:"課題発見、調査、分析で頻出。"},
+      {id:10,word:"recognize",partOfSpeech:"verb",meaningJa:"認識する、見覚えがある",coreImageText:"前に知っているものとして頭が反応する。",exampleEn:"I recognized her voice immediately.",exampleJa:"彼女の声だとすぐに分かった。",category:"Thinking",note:"価値や功績を認める意味もある。"},
+      {id:11,word:"through",partOfSpeech:"prep / adv",meaningJa:"通り抜けて、通して",coreImageText:"立体的な空間や過程の中を抜ける。",exampleEn:"We walked through the park.",exampleJa:"公園を通り抜けて歩いた。",category:"Movement",note:"方法や経験を通す意味にも広がる。"},
+      {id:12,word:"across",partOfSpeech:"prep / adv",meaningJa:"横切って、向こう側へ",coreImageText:"平面の端から端へ渡る。",exampleEn:"She walked across the street.",exampleJa:"彼女は通りを横切った。",category:"Movement",note:"across from は向かい側。"},
+      {id:13,word:"toward",partOfSpeech:"prep",meaningJa:"に向かって",coreImageText:"到達するかは別として、その方向へ進む。",exampleEn:"He walked toward the station.",exampleJa:"彼は駅の方へ歩いた。",category:"Movement",note:"米国では toward、英国では towards も一般的。"},
+      {id:14,word:"avoid",partOfSpeech:"verb",meaningJa:"避ける",coreImageText:"危険や面倒なものから意図的に距離を取る。",exampleEn:"Avoid opening suspicious links.",exampleJa:"怪しいリンクを開くのは避けてください。",category:"Action",note:"avoid doing の形に注意。"},
+      {id:15,word:"approach",partOfSpeech:"verb / noun",meaningJa:"近づく / 方法",coreImageText:"対象との距離を縮める。考え方にも使う。",exampleEn:"We need a different approach.",exampleJa:"別のアプローチが必要だ。",category:"Action",note:"方法という意味が実用的。"},
+      {id:16,word:"handle",partOfSpeech:"verb / noun",meaningJa:"対処する、扱う / 取っ手",coreImageText:"手で持ってコントロールする。",exampleEn:"Can you handle this task?",exampleJa:"このタスクに対応できますか。",category:"Work",note:"仕事の依頼でよく使う。"},
+      {id:17,word:"manage",partOfSpeech:"verb",meaningJa:"管理する、なんとかやる",coreImageText:"限られた条件の中で物事を動かす。",exampleEn:"I managed to finish it on time.",exampleJa:"なんとか時間通りに終えた。",category:"Work",note:"manage to は苦労して成功。"},
+      {id:18,word:"improve",partOfSpeech:"verb",meaningJa:"改善する、向上させる",coreImageText:"今の状態をよりよい状態へ押し上げる。",exampleEn:"I want to improve my English.",exampleJa:"英語を上達させたい。",category:"Growth",note:"自学習の最重要語。"},
+      {id:19,word:"develop",partOfSpeech:"verb",meaningJa:"発展させる、開発する",coreImageText:"小さな種を育てて形にする。",exampleEn:"We developed a new feature.",exampleJa:"新機能を開発した。",category:"Growth",note:"スキル、関係、製品に使える。"},
+      {id:20,word:"maintain",partOfSpeech:"verb",meaningJa:"維持する、保つ",coreImageText:"よい状態が崩れないよう支える。",exampleEn:"It is hard to maintain motivation.",exampleJa:"モチベーションを保つのは難しい。",category:"Growth",note:"maintenance の動詞。"},
+      {id:21,word:"require",partOfSpeech:"verb",meaningJa:"必要とする、要求する",coreImageText:"条件としてそれがないと進めない。",exampleEn:"This job requires patience.",exampleJa:"この仕事には忍耐が必要だ。",category:"Work",note:"need より硬めで公式。"},
+      {id:22,word:"provide",partOfSpeech:"verb",meaningJa:"提供する",coreImageText:"必要なものを相手の前に差し出す。",exampleEn:"The app provides useful examples.",exampleJa:"そのアプリは役立つ例を提供する。",category:"Work",note:"provide A with B / provide B for A。"},
+      {id:23,word:"support",partOfSpeech:"verb / noun",meaningJa:"支援する、支持する / 支援",coreImageText:"下から支えて倒れないようにする。",exampleEn:"Thank you for your support.",exampleJa:"ご支援ありがとうございます。",category:"Work",note:"顧客対応でも頻出。"},
+      {id:24,word:"suggest",partOfSpeech:"verb",meaningJa:"提案する、それとなく示す",coreImageText:"相手の前に案をそっと置く。",exampleEn:"I suggest we start with a small test.",exampleJa:"小さなテストから始めることを提案します。",category:"Communication",note:"suggest doing / suggest that。"},
+      {id:25,word:"explain",partOfSpeech:"verb",meaningJa:"説明する",coreImageText:"見えにくい構造をほどいて見えるようにする。",exampleEn:"Could you explain that again?",exampleJa:"もう一度説明していただけますか。",category:"Communication",note:"依頼表現として便利。"},
+      {id:26,word:"describe",partOfSpeech:"verb",meaningJa:"描写する、説明する",coreImageText:"特徴を言葉で輪郭づける。",exampleEn:"Please describe the problem in detail.",exampleJa:"問題を詳しく説明してください。",category:"Communication",note:"explain より様子を述べる感じ。"},
+      {id:27,word:"mention",partOfSpeech:"verb",meaningJa:"言及する、軽く触れる",coreImageText:"話題の中に少しだけ置く。",exampleEn:"She mentioned a new project.",exampleJa:"彼女は新しいプロジェクトに触れた。",category:"Communication",note:"カジュアルな報告で使いやすい。"},
+      {id:28,word:"confirm",partOfSpeech:"verb",meaningJa:"確認する、確定する",coreImageText:"不確かなものにチェックを入れて固める。",exampleEn:"Can you confirm the deadline?",exampleJa:"締切を確認してもらえますか。",category:"Communication",note:"ビジネス英語の基本。"},
+      {id:29,word:"clarify",partOfSpeech:"verb",meaningJa:"明確にする",coreImageText:"曇った水を澄ませるように、曖昧さを消す。",exampleEn:"Let me clarify my point.",exampleJa:"私の要点を明確にさせてください。",category:"Communication",note:"誤解を避けたい時に強い。"},
+      {id:30,word:"request",partOfSpeech:"verb / noun",meaningJa:"依頼する / 依頼",coreImageText:"必要なものを相手に正式に求める。",exampleEn:"I requested more information.",exampleJa:"追加情報を依頼した。",category:"Communication",note:"ask よりフォーマル。"},
+      {id:31,word:"available",partOfSpeech:"adj",meaningJa:"利用可能な、手が空いている",coreImageText:"今そこにあり、使える状態。",exampleEn:"Are you available this afternoon?",exampleJa:"今日の午後は空いていますか。",category:"Daily",note:"予定調整で必須。"},
+      {id:32,word:"specific",partOfSpeech:"adj",meaningJa:"具体的な、特定の",coreImageText:"ぼんやりした範囲から一点に絞る。",exampleEn:"Do you have a specific example?",exampleJa:"具体例はありますか。",category:"Academic",note:"specific to は特有の。"},
+      {id:33,word:"general",partOfSpeech:"adj",meaningJa:"一般的な、全体的な",coreImageText:"細部ではなく広い範囲を見る。",exampleEn:"This is a general rule.",exampleJa:"これは一般的なルールです。",category:"Academic",note:"specific とセットで覚える。"},
+      {id:34,word:"similar",partOfSpeech:"adj",meaningJa:"似ている",coreImageText:"完全一致ではないが形や性質が近い。",exampleEn:"These two words are similar.",exampleJa:"この二つの単語は似ている。",category:"Academic",note:"similar to の形。"},
+      {id:35,word:"common",partOfSpeech:"adj",meaningJa:"よくある、共通の",coreImageText:"多くの場所や人にまたがって存在する。",exampleEn:"This is a common mistake.",exampleJa:"これはよくある間違いです。",category:"Daily",note:"頻度と共有の両方に使う。"},
+      {id:36,word:"likely",partOfSpeech:"adj / adv",meaningJa:"可能性が高い、おそらく",coreImageText:"未来の方向がそちらに傾いている。",exampleEn:"It is likely to rain tomorrow.",exampleJa:"明日は雨が降りそうだ。",category:"Academic",note:"be likely to が定番。"},
+      {id:37,word:"possible",partOfSpeech:"adj",meaningJa:"可能な",coreImageText:"実現できる扉が開いている。",exampleEn:"Is it possible to change the date?",exampleJa:"日程を変更することは可能ですか。",category:"Daily",note:"丁寧な依頼に使いやすい。"},
+      {id:38,word:"necessary",partOfSpeech:"adj",meaningJa:"必要な",coreImageText:"それがないと成立しない部品。",exampleEn:"It is necessary to save your work.",exampleJa:"作業を保存することが必要です。",category:"Academic",note:"necessary for / to。"},
+      {id:39,word:"effective",partOfSpeech:"adj",meaningJa:"効果的な",coreImageText:"狙った結果にきちんと届く。",exampleEn:"This method is very effective.",exampleJa:"この方法はとても効果的です。",category:"Work",note:"efficient との違いも重要。"},
+      {id:40,word:"efficient",partOfSpeech:"adj",meaningJa:"効率的な",coreImageText:"少ない時間や労力で成果を出す。",exampleEn:"We need a more efficient process.",exampleJa:"もっと効率的なプロセスが必要です。",category:"Work",note:"無駄の少なさに焦点。"},
+      {id:41,word:"accurate",partOfSpeech:"adj",meaningJa:"正確な",coreImageText:"的の中心にずれなく当たる。",exampleEn:"The report must be accurate.",exampleJa:"その報告書は正確でなければならない。",category:"Work",note:"データ、翻訳、発音に使える。"},
+      {id:42,word:"reliable",partOfSpeech:"adj",meaningJa:"信頼できる",coreImageText:"何度使っても崩れない安定感。",exampleEn:"We need reliable data.",exampleJa:"信頼できるデータが必要です。",category:"Work",note:"人にも物にも使える。"},
+      {id:43,word:"flexible",partOfSpeech:"adj",meaningJa:"柔軟な",coreImageText:"状況に合わせてしなやかに形を変える。",exampleEn:"Our schedule is flexible.",exampleJa:"私たちの予定は柔軟に調整できます。",category:"Work",note:"働き方や考え方に便利。"},
+      {id:44,word:"benefit",partOfSpeech:"noun / verb",meaningJa:"利益、利点 / 恩恵を受ける",coreImageText:"自分にとってプラスになるもの。",exampleEn:"What are the benefits of this plan?",exampleJa:"この計画の利点は何ですか。",category:"Work",note:"advantage より広く使える。"},
+      {id:45,word:"challenge",partOfSpeech:"noun / verb",meaningJa:"課題、挑戦 / 異議を唱える",coreImageText:"乗り越えるべき高めの壁。",exampleEn:"The biggest challenge is time.",exampleJa:"最大の課題は時間です。",category:"Growth",note:"problem より前向きに響くことが多い。"},
+      {id:46,word:"opportunity",partOfSpeech:"noun",meaningJa:"機会",coreImageText:"前に進める入口が開く。",exampleEn:"This is a good opportunity to learn.",exampleJa:"これは学ぶよい機会です。",category:"Growth",note:"chance より少しフォーマル。"},
+      {id:47,word:"priority",partOfSpeech:"noun",meaningJa:"優先事項",coreImageText:"先に扱うべきものを上に置く。",exampleEn:"Safety is our top priority.",exampleJa:"安全が私たちの最優先事項です。",category:"Work",note:"top priority は定番表現。"},
+      {id:48,word:"deadline",partOfSpeech:"noun",meaningJa:"締切",coreImageText:"ここまでに終えるという線。",exampleEn:"The deadline is next Friday.",exampleJa:"締切は来週の金曜日です。",category:"Work",note:"due date と近い。"},
+      {id:49,word:"issue",partOfSpeech:"noun",meaningJa:"問題、論点、号",coreImageText:"対応や議論が必要な一点。",exampleEn:"We found an issue in the system.",exampleJa:"システムに問題を見つけた。",category:"Work",note:"problem より中立的。"},
+      {id:50,word:"solution",partOfSpeech:"noun",meaningJa:"解決策",coreImageText:"問題に差し込む鍵。",exampleEn:"We are looking for a better solution.",exampleJa:"よりよい解決策を探しています。",category:"Work",note:"solve の名詞。"},
+      {id:51,word:"process",partOfSpeech:"noun / verb",meaningJa:"過程、手順 / 処理する",coreImageText:"結果に至るまでの流れ。",exampleEn:"Let's review the process.",exampleJa:"手順を見直しましょう。",category:"Work",note:"仕事の説明で頻出。"},
+      {id:52,word:"resource",partOfSpeech:"noun",meaningJa:"資源、資料、人材",coreImageText:"目的のために使える材料。",exampleEn:"We don't have enough resources.",exampleJa:"十分なリソースがありません。",category:"Work",note:"時間や人員も resource。"},
+      {id:53,word:"feature",partOfSpeech:"noun / verb",meaningJa:"特徴、機能 / 取り上げる",coreImageText:"目立つ性質や使える機能。",exampleEn:"This app has a new feature.",exampleJa:"このアプリには新機能があります。",category:"Tech",note:"アプリ開発で必須。"},
+      {id:54,word:"update",partOfSpeech:"verb / noun",meaningJa:"更新する / 更新",coreImageText:"古い状態を新しい状態にする。",exampleEn:"Please update the file.",exampleJa:"ファイルを更新してください。",category:"Tech",note:"status update は進捗報告。"},
+      {id:55,word:"access",partOfSpeech:"noun / verb",meaningJa:"アクセス、利用権 / 利用する",coreImageText:"中に入ったり使ったりできる入口。",exampleEn:"I can't access the document.",exampleJa:"その文書にアクセスできません。",category:"Tech",note:"permission と一緒によく使う。"},
+      {id:56,word:"secure",partOfSpeech:"adj / verb",meaningJa:"安全な / 確保する",coreImageText:"守られていて、簡単には崩れない。",exampleEn:"Make sure your password is secure.",exampleJa:"パスワードが安全であることを確認してください。",category:"Tech",note:"安全と確保の両方が大事。"},
+      {id:57,word:"reduce",partOfSpeech:"verb",meaningJa:"減らす",coreImageText:"量や程度を小さくする。",exampleEn:"We need to reduce costs.",exampleJa:"コストを削減する必要がある。",category:"Work",note:"increase と対で覚える。"},
+      {id:58,word:"increase",partOfSpeech:"verb / noun",meaningJa:"増える、増やす / 増加",coreImageText:"量や程度が上に伸びる。",exampleEn:"Sales increased last month.",exampleJa:"先月、売上が増加した。",category:"Work",note:"自動詞・他動詞どちらも使う。"},
+      {id:59,word:"affect",partOfSpeech:"verb",meaningJa:"影響を与える",coreImageText:"何かに触れて状態を変える。",exampleEn:"The weather affected our plan.",exampleJa:"天気が私たちの計画に影響した。",category:"Academic",note:"effect は名詞が基本。"},
+      {id:60,word:"result",partOfSpeech:"noun / verb",meaningJa:"結果 / 結果として生じる",coreImageText:"原因や行動のあとに残るもの。",exampleEn:"The result was better than expected.",exampleJa:"結果は予想より良かった。",category:"Academic",note:"as a result はその結果。"}
+    ];
+
+    const store = {
+      words: "core_vocab_practical_words_v1",
+      progress: "core_vocab_practical_progress_v1",
+      settings: "core_vocab_practical_settings_v1"
+    };
+    const defaultSettings = {
+      shuffle: false,
+      showVisual: true,
+      filters: { none: true, weak: true, good: true, perfect: true }
+    };
+    const state = {
+      words: [],
+      displayWords: [],
+      currentIndex: 0,
+      isFlipped: false,
+      currentView: "card",
+      progress: {},
+      settings: structuredClone(defaultSettings),
+      quiz: { word: null, answered: false }
+    };
+    const statusLabels = { none: "未学習", weak: "苦手", good: "理解", perfect: "定着" };
+    const statusColors = { none: "#cbd5e1", weak: "#ef4444", good: "#f59e0b", perfect: "#1f9d55" };
+    const categoryColors = ["#dbeafe,#dcfce7,#fef3c7", "#ede9fe,#cffafe,#fce7f3", "#e0f2fe,#fef9c3,#dcfce7", "#fae8ff,#dbeafe,#fee2e2", "#ecfccb,#fef3c7,#e0e7ff"];
+
+    const $ = (id) => document.getElementById(id);
+    const els = {
+      subtitle: $("subtitle"), progressText: $("progressText"), searchInput: $("searchInput"), categorySelect: $("categorySelect"),
+      settingsBtn: $("settingsBtn"), settingsModal: $("settingsModal"), closeSettingsBtn: $("closeSettingsBtn"),
+      cardView: $("cardView"), quizView: $("quizView"), statsView: $("statsView"), flashcard: $("flashcard"),
+      visual: $("visual"), categoryBadge: $("categoryBadge"), letter: $("letter"), word: $("word"), pos: $("pos"),
+      wordBack: $("wordBack"), meaning: $("meaning"), core: $("core"), exampleEn: $("exampleEn"), exampleJa: $("exampleJa"), note: $("note"),
+      speakWordBtn: $("speakWordBtn"), speakExampleBtn: $("speakExampleBtn"), prevBtn: $("prevBtn"), nextBtn: $("nextBtn"),
+      statusBtns: document.querySelectorAll(".status-btn"), tabs: document.querySelectorAll(".tab"), filterBtns: document.querySelectorAll(".chip"),
+      shuffleToggle: $("shuffleToggle"), visualToggle: $("visualToggle"), csvInput: $("csvInput"), exportBtn: $("exportBtn"), resetProgressBtn: $("resetProgressBtn"),
+      quizWord: $("quizWord"), quizPos: $("quizPos"), choices: $("choices"), quizResult: $("quizResult"), nextQuizBtn: $("nextQuizBtn"),
+      statTotal: $("statTotal"), statDone: $("statDone"), statWeak: $("statWeak"), statPerfect: $("statPerfect"), progressBar: $("progressBar"), statsSummary: $("statsSummary"), wordList: $("wordList")
+    };
+
+    function init() {
+      loadData();
+      renderCategoryOptions();
+      bindEvents();
+      applySettingsToControls();
+      updateDisplayList(false);
+      renderAll();
+    }
+
+    function loadData() {
+      const savedWords = safeJson(localStorage.getItem(store.words), null);
+      state.words = Array.isArray(savedWords) && savedWords.length >= seedWords.length ? savedWords : seedWords;
+      localStorage.setItem(store.words, JSON.stringify(state.words));
+      state.progress = safeJson(localStorage.getItem(store.progress), {});
+      state.settings = { ...structuredClone(defaultSettings), ...safeJson(localStorage.getItem(store.settings), {}) };
+      state.settings.filters = { ...defaultSettings.filters, ...(state.settings.filters || {}) };
+    }
+
+    function safeJson(text, fallback) {
+      try { return text ? JSON.parse(text) : fallback; } catch { return fallback; }
+    }
+
+    function saveProgress() {
+      localStorage.setItem(store.progress, JSON.stringify(state.progress));
+    }
+
+    function saveSettings() {
+      localStorage.setItem(store.settings, JSON.stringify(state.settings));
+    }
+
+    function renderCategoryOptions() {
+      const categories = [...new Set(state.words.map(w => w.category || "Other"))].sort();
+      for (const category of categories) {
+        const option = document.createElement("option");
+        option.value = category;
+        option.textContent = category;
+        els.categorySelect.appendChild(option);
+      }
+    }
+
+    function getFilteredWords() {
+      const query = els.searchInput.value.trim().toLowerCase();
+      const category = els.categorySelect.value;
+      return state.words.filter(word => {
+        const status = state.progress[word.id] || "none";
+        const text = [word.word, word.meaningJa, word.coreImageText, word.exampleEn, word.exampleJa, word.category, word.note].join(" ").toLowerCase();
+        return state.settings.filters[status] && (category === "all" || word.category === category) && (!query || text.includes(query));
+      });
+    }
+
+    function updateDisplayList(resetIndex = true) {
+      let list = getFilteredWords();
+      if (list.length === 0) {
+        state.displayWords = [];
+        return;
+      }
+      if (state.settings.shuffle) list = shuffle([...list]);
+      state.displayWords = list;
+      if (resetIndex || state.currentIndex >= list.length) state.currentIndex = 0;
+    }
+
+    function shuffle(list) {
+      for (let i = list.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [list[i], list[j]] = [list[j], list[i]];
+      }
+      return list;
+    }
+
+    function currentWord() {
+      return state.displayWords[state.currentIndex] || null;
+    }
+
+    function renderAll() {
+      renderCard();
+      renderQuiz();
+      renderStats();
+      renderFooterVisibility();
+    }
+
+    function renderQuiz() {
+      if (state.currentView !== "quiz") return;
+      if (!state.quiz.word || !state.displayWords.some(word => word.id === state.quiz.word.id)) {
+        startQuiz();
+      }
+    }
+
+    function renderCard() {
+      const word = currentWord();
+      els.subtitle.textContent = `実用英単語 ${state.words.length}`;
+      els.progressText.textContent = word ? `${state.currentIndex + 1} / ${state.displayWords.length}` : "0 / 0";
+      if (!word) {
+        els.word.textContent = "No cards";
+        els.pos.textContent = "条件を変更してください";
+        els.letter.textContent = "-";
+        return;
+      }
+      els.word.textContent = word.word;
+      els.pos.textContent = word.partOfSpeech;
+      els.wordBack.textContent = word.word;
+      els.meaning.textContent = word.meaningJa;
+      els.core.textContent = word.coreImageText;
+      els.exampleEn.textContent = `"${word.exampleEn}"`;
+      els.exampleJa.textContent = word.exampleJa;
+      els.note.textContent = word.note || "実際の会話や仕事で使う場面を想像しながら覚える。";
+      els.letter.textContent = word.word.charAt(0).toUpperCase();
+      els.categoryBadge.textContent = word.category || "Other";
+      const colorSet = categoryColors[Math.abs(hash(word.category || word.word)) % categoryColors.length].split(",");
+      els.visual.style.background = `linear-gradient(135deg, ${colorSet[0]}, ${colorSet[1]} 52%, ${colorSet[2]})`;
+      els.visual.classList.toggle("hidden", !state.settings.showVisual);
+      updateStatusButtons();
+      resetFlip();
+    }
+
+    function hash(text) {
+      return [...text].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+    }
+
+    function resetFlip() {
+      state.isFlipped = false;
+      els.flashcard.classList.remove("flipped");
+    }
+
+    function updateStatusButtons() {
+      const word = currentWord();
+      const status = word ? state.progress[word.id] || "none" : "none";
+      els.statusBtns.forEach(btn => btn.classList.toggle("active", btn.dataset.status === status));
+    }
+
+    function setStatus(status) {
+      const word = currentWord();
+      if (!word) return;
+      state.progress[word.id] = status;
+      saveProgress();
+      updateStatusButtons();
+      renderStats();
+    }
+
+    function nextCard() {
+      if (!state.displayWords.length) return;
+      state.currentIndex = (state.currentIndex + 1) % state.displayWords.length;
+      renderAll();
+    }
+
+    function prevCard() {
+      if (!state.displayWords.length) return;
+      state.currentIndex = (state.currentIndex - 1 + state.displayWords.length) % state.displayWords.length;
+      renderAll();
+    }
+
+    let voices = [];
+    function loadVoices() {
+      if ("speechSynthesis" in window) voices = speechSynthesis.getVoices();
+    }
+    if ("speechSynthesis" in window) {
+      loadVoices();
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function speak(text) {
+      if (!("speechSynthesis" in window) || !text) return;
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = .86;
+      utterance.pitch = 1;
+      utterance.voice = voices.find(v => v.lang.startsWith("en-") && /Samantha|Daniel|Google|Premium|Enhanced/i.test(v.name)) || voices.find(v => v.lang.startsWith("en-")) || null;
+      speechSynthesis.speak(utterance);
+    }
+
+    function setView(view) {
+      state.currentView = view;
+      els.tabs.forEach(tab => tab.classList.toggle("active", tab.dataset.view === view));
+      els.cardView.style.display = view === "card" ? "flex" : "none";
+      els.quizView.style.display = view === "quiz" ? "block" : "none";
+      els.statsView.style.display = view === "stats" ? "block" : "none";
+      if (view === "quiz") startQuiz();
+      renderFooterVisibility();
+      renderStats();
+    }
+
+    function renderFooterVisibility() {
+      document.querySelector(".footer").style.display = state.currentView === "stats" ? "none" : "block";
+    }
+
+    function startQuiz() {
+      if (!state.displayWords.length) {
+        els.quizWord.textContent = "No cards";
+        els.choices.innerHTML = "";
+        return;
+      }
+      const word = state.displayWords[Math.floor(Math.random() * state.displayWords.length)];
+      state.quiz = { word, answered: false };
+      els.quizWord.textContent = word.word;
+      els.quizPos.textContent = `${word.partOfSpeech} / 正しい意味を選んでください`;
+      els.quizResult.textContent = "";
+      const wrong = shuffle(state.words.filter(w => w.id !== word.id)).slice(0, 3);
+      const choices = shuffle([word, ...wrong]);
+      els.choices.innerHTML = "";
+      choices.forEach(choiceWord => {
+        const btn = document.createElement("button");
+        btn.className = "choice";
+        btn.textContent = choiceWord.meaningJa;
+        btn.addEventListener("click", () => answerQuiz(btn, choiceWord.id === word.id));
+        els.choices.appendChild(btn);
+      });
+    }
+
+    function answerQuiz(button, isCorrect) {
+      if (state.quiz.answered) return;
+      state.quiz.answered = true;
+      button.classList.add(isCorrect ? "correct" : "wrong");
+      [...els.choices.children].forEach(btn => {
+        if (btn.textContent === state.quiz.word.meaningJa) btn.classList.add("correct");
+      });
+      state.progress[state.quiz.word.id] = isCorrect ? "good" : "weak";
+      saveProgress();
+      els.quizResult.textContent = isCorrect ? "正解。理解に更新しました。" : "惜しい。苦手に入れて復習しましょう。";
+      renderStats();
+    }
+
+    function renderStats() {
+      const list = state.displayWords;
+      const counts = { none: 0, weak: 0, good: 0, perfect: 0 };
+      list.forEach(word => counts[state.progress[word.id] || "none"]++);
+      const done = counts.weak + counts.good + counts.perfect;
+      els.statTotal.textContent = list.length;
+      els.statDone.textContent = done;
+      els.statWeak.textContent = counts.weak;
+      els.statPerfect.textContent = counts.perfect;
+      els.progressBar.innerHTML = "";
+      ["weak", "good", "perfect", "none"].forEach(status => {
+        const part = document.createElement("i");
+        part.style.width = list.length ? `${counts[status] / list.length * 100}%` : "0%";
+        part.style.background = statusColors[status];
+        els.progressBar.appendChild(part);
+      });
+      const ratio = list.length ? Math.round(done / list.length * 100) : 0;
+      els.statsSummary.textContent = `学習済み ${ratio}% / 検索やカテゴリ条件を変えると統計も絞り込まれます。`;
+      els.wordList.innerHTML = "";
+      list.slice(0, 24).forEach(word => {
+        const row = document.createElement("div");
+        const status = state.progress[word.id] || "none";
+        row.className = "word-row";
+        row.innerHTML = `<div><strong>${escapeHtml(word.word)}</strong><br><span>${escapeHtml(word.meaningJa)}</span></div><span style="color:${statusColors[status]};font-weight:900">${statusLabels[status]}</span>`;
+        els.wordList.appendChild(row);
+      });
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[ch]));
+    }
+
+    function applySettingsToControls() {
+      els.shuffleToggle.checked = state.settings.shuffle;
+      els.visualToggle.checked = state.settings.showVisual;
+      els.filterBtns.forEach(btn => btn.classList.toggle("active", !!state.settings.filters[btn.dataset.filter]));
+    }
+
+    function exportCsv() {
+      const header = ["word","partOfSpeech","meaningJa","coreImageText","exampleEn","exampleJa","category","note","status"];
+      const rows = state.words.map(word => header.map(key => {
+        const value = key === "status" ? state.progress[word.id] || "none" : word[key] || "";
+        return `"${String(value).replace(/"/g, '""')}"`;
+      }).join(","));
+      const blob = new Blob([[header.join(","), ...rows].join("\n")], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "core-vocab-export.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importCsv(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const lines = String(reader.result).split(/\r?\n/).filter(Boolean);
+        let added = 0;
+        for (let i = 1; i < lines.length; i++) {
+          const cells = parseCsvLine(lines[i]);
+          if (cells.length < 6) continue;
+          state.words.push({
+            id: Date.now() + i,
+            word: cells[0],
+            partOfSpeech: cells[1],
+            meaningJa: cells[2],
+            coreImageText: cells[3],
+            exampleEn: cells[4],
+            exampleJa: cells[5],
+            category: cells[6] || "Imported",
+            note: cells[7] || ""
+          });
+          added++;
         }
-
-        // --- 4. 初期化処理 ---
-        function init() {
-            loadData();
-            applySettings();
-            updateFilterUI();
-            setupEventListeners();
-            renderCard();
+        localStorage.setItem(store.words, JSON.stringify(state.words));
+        if (added) {
+          updateDisplayList();
+          renderAll();
+          alert(`${added}件追加しました。`);
+        } else {
+          alert("追加できる行が見つかりませんでした。");
         }
+        els.csvInput.value = "";
+      };
+      reader.readAsText(file);
+    }
 
-        // LocalStorageからデータ読み込み
-        function loadData() {
-            // 単語データ
-            const savedWords = storage.get('vocab_words');
-            if (savedWords) {
-                let parsedWords = parseSavedJSON(savedWords, []);
-                if (!Array.isArray(parsedWords) || parsedWords.length === 0) {
-                    parsedWords = [...initialWords];
-                }
-                // 過去の保存データに古い外部画像が残っている場合、新しいローカル画像をマージして反映させる
-                state.words = parsedWords.map(sw => {
-                    const initW = initialWords.find(iw => iw.id === sw.id);
-                    if (initW && (
-                        !sw.imagePath ||
-                        sw.imagePath.trim() === '' ||
-                        sw.imagePath.startsWith('https://images.unsplash.com/')
-                    )) {
-                        sw.imagePath = initW.imagePath;
-                    }
-                    if (initW && !sw.imagePrompt) {
-                        sw.imagePrompt = initW.imagePrompt;
-                    }
-                    return sw;
-                });
-                storage.set('vocab_words', JSON.stringify(state.words));
-            } else {
-                state.words = [...initialWords];
-                storage.set('vocab_words', JSON.stringify(state.words));
-            }
-
-            // 設定
-            const savedSettings = storage.get('vocab_settings');
-            if (savedSettings) {
-                state.settings = {
-                    ...state.settings,
-                    ...parseSavedJSON(savedSettings, {})
-                };
-                
-                // プルダウン版 (learningMode) からのマイグレーション
-                if (state.settings.learningMode !== undefined) {
-                    delete state.settings.learningMode;
-                }
-                if (!state.settings.filters) {
-                    state.settings.filters = { none: true, weak: true, good: true, perfect: true };
-                }
-                
-                els.toggleShuffle.checked = state.settings.shuffle;
-                els.toggleImage.checked = state.settings.showImage;
-                els.toggleAutoAdvance.checked = !!state.settings.autoAdvance;
-            }
-
-            // 理解度
-            const savedProgress = storage.get('vocab_progress');
-            if (savedProgress) {
-                state.progress = parseSavedJSON(savedProgress, {});
-            }
-
-            // 現在位置
-            const savedIndex = storage.get('vocab_current_index');
-            if (savedIndex !== null) {
-                state.currentIndex = parseInt(savedIndex, 10);
-            }
-
-            updateDisplayList();
-            updateStats();
+    function parseCsvLine(line) {
+      const cells = [];
+      let value = "";
+      let quoted = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"' && line[i + 1] === '"') {
+          value += '"';
+          i++;
+        } else if (ch === '"') {
+          quoted = !quoted;
+        } else if (ch === "," && !quoted) {
+          cells.push(value.trim());
+          value = "";
+        } else {
+          value += ch;
         }
+      }
+      cells.push(value.trim());
+      return cells;
+    }
 
-        // 表示用リストの更新（シャッフル対応）
-        function updateDisplayList() {
-            let listToDisplay = state.words.filter(word => {
-                const status = state.progress[word.id] || 'none';
-                return state.settings.filters[status];
-            });
-            
-            if (listToDisplay.length === 0) {
-                alert('条件に一致するカードがありません。すべてのフィルターをONに戻します。');
-                state.settings.filters = { none: true, weak: true, good: true, perfect: true };
-                saveSettings();
-                updateFilterUI();
-                listToDisplay = [...state.words];
-            }
-
-            if (state.settings.shuffle) {
-                // Fisher-Yates shuffle
-                for (let i = listToDisplay.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [listToDisplay[i], listToDisplay[j]] = [listToDisplay[j], listToDisplay[i]];
-                }
-            }
-            
-            state.displayWords = listToDisplay;
-            state.currentIndex = 0; // リスト更新時は先頭に戻す
-            saveCurrentIndex();
+    function bindEvents() {
+      els.flashcard.addEventListener("click", event => {
+        if (event.target.closest("button")) return;
+        state.isFlipped = !state.isFlipped;
+        els.flashcard.classList.toggle("flipped");
+      });
+      els.speakWordBtn.addEventListener("click", event => { event.stopPropagation(); speak(currentWord()?.word); });
+      els.speakExampleBtn.addEventListener("click", event => { event.stopPropagation(); speak(currentWord()?.exampleEn); });
+      els.nextBtn.addEventListener("click", nextCard);
+      els.prevBtn.addEventListener("click", prevCard);
+      els.statusBtns.forEach(btn => btn.addEventListener("click", () => setStatus(btn.dataset.status)));
+      els.tabs.forEach(tab => tab.addEventListener("click", () => setView(tab.dataset.view)));
+      els.searchInput.addEventListener("input", () => { updateDisplayList(); renderAll(); });
+      els.categorySelect.addEventListener("change", () => { updateDisplayList(); renderAll(); });
+      els.settingsBtn.addEventListener("click", () => els.settingsModal.classList.add("open"));
+      els.closeSettingsBtn.addEventListener("click", () => els.settingsModal.classList.remove("open"));
+      els.settingsModal.addEventListener("click", event => { if (event.target === els.settingsModal) els.settingsModal.classList.remove("open"); });
+      els.filterBtns.forEach(btn => btn.addEventListener("click", () => {
+        const status = btn.dataset.filter;
+        if (state.settings.filters[status] && Object.values(state.settings.filters).filter(Boolean).length === 1) {
+          alert("少なくとも1つは選択してください。");
+          return;
         }
-
-        function saveCurrentIndex() {
-            storage.set('vocab_current_index', state.currentIndex);
+        state.settings.filters[status] = !state.settings.filters[status];
+        saveSettings();
+        applySettingsToControls();
+        updateDisplayList();
+        renderAll();
+      }));
+      els.shuffleToggle.addEventListener("change", () => {
+        state.settings.shuffle = els.shuffleToggle.checked;
+        saveSettings();
+        updateDisplayList();
+        renderAll();
+      });
+      els.visualToggle.addEventListener("change", () => {
+        state.settings.showVisual = els.visualToggle.checked;
+        saveSettings();
+        renderCard();
+      });
+      els.exportBtn.addEventListener("click", exportCsv);
+      els.csvInput.addEventListener("change", importCsv);
+      els.resetProgressBtn.addEventListener("click", () => {
+        if (!confirm("理解度の進捗をリセットしますか？")) return;
+        state.progress = {};
+        saveProgress();
+        renderAll();
+      });
+      els.nextQuizBtn.addEventListener("click", startQuiz);
+      document.addEventListener("keydown", event => {
+        if (event.key === "ArrowRight") nextCard();
+        if (event.key === "ArrowLeft") prevCard();
+        if (event.key === " " && state.currentView === "card") {
+          event.preventDefault();
+          state.isFlipped = !state.isFlipped;
+          els.flashcard.classList.toggle("flipped");
         }
+      });
+      let startX = 0;
+      els.flashcard.addEventListener("touchstart", event => { startX = event.changedTouches[0].screenX; }, { passive: true });
+      els.flashcard.addEventListener("touchend", event => {
+        const diff = startX - event.changedTouches[0].screenX;
+        if (diff > 55) nextCard();
+        if (diff < -55) prevCard();
+      }, { passive: true });
+    }
 
-        function saveProgress() {
-            storage.set('vocab_progress', JSON.stringify(state.progress));
-        }
-
-        function saveSettings() {
-            storage.set('vocab_settings', JSON.stringify(state.settings));
-        }
-
-        // --- 5. UI更新 ---
-        function renderCard() {
-            if (state.displayWords.length === 0) return;
-            
-            const currentWord = state.displayWords[state.currentIndex];
-            
-            // 表面
-            els.word.textContent = currentWord.word;
-            els.pos.textContent = currentWord.partOfSpeech;
-            
-            // 画像処理（プレースホルダー）
-            if (currentWord.imagePath && currentWord.imagePath.trim() !== '') {
-                els.img.src = currentWord.imagePath;
-                els.img.style.display = '';
-                els.img.classList.remove('hidden');
-                els.imgFallback.classList.add('hidden');
-            } else {
-                els.img.style.display = 'none';
-                els.img.classList.add('hidden');
-                els.imgFallback.classList.remove('hidden');
-                els.imgFallback.textContent = currentWord.word.charAt(0).toUpperCase();
-                // 単語ごとにグラデーションの色相を変える遊び心
-                const hue = (currentWord.word.length * 15) % 360;
-                document.querySelector('.img-placeholder').style.background = `linear-gradient(135deg, hsl(${hue}, 80%, 85%) 0%, hsl(${hue + 40}, 80%, 75%) 100%)`;
-            }
-
-            // 裏面
-            els.wordBack.textContent = currentWord.word;
-            els.meaning.textContent = currentWord.meaningJa;
-            els.core.textContent = currentWord.coreImageText;
-            els.exEn.textContent = `"${currentWord.exampleEn}"`;
-            els.exJa.textContent = currentWord.exampleJa;
-
-            // 進捗表示
-            els.progressText.textContent = `${state.currentIndex + 1} / ${state.displayWords.length}`;
-
-            // 理解度ボタンのアクティブ状態更新
-            updateStatusButtons(currentWord.id);
-            updateStats();
-            
-            // 表面に戻す
-            els.card.classList.remove('is-dragging');
-            els.card.style.transform = '';
-            if (state.isFlipped) {
-                els.card.classList.remove('is-flipped');
-                state.isFlipped = false;
-            }
-        }
-
-        function applySettings() {
-            // 画像表示モード
-            if (state.settings.showImage) {
-                els.imageArea.classList.remove('hidden');
-                els.frontText.classList.remove('h-full');
-            } else {
-                els.imageArea.classList.add('hidden');
-                els.frontText.classList.add('h-full');
-            }
-        }
-        
-        function updateFilterUI() {
-            els.filterBtns.forEach(btn => {
-                const status = btn.dataset.filter;
-                if (state.settings.filters[status]) {
-                    btn.classList.add('bg-gray-800', 'text-white', 'border-gray-800');
-                    btn.classList.remove('bg-white', 'text-gray-500', 'border-gray-300');
-                } else {
-                    btn.classList.remove('bg-gray-800', 'text-white', 'border-gray-800');
-                    btn.classList.add('bg-white', 'text-gray-500', 'border-gray-300');
-                }
-            });
-        }
-
-        function updateStatusButtons(wordId) {
-            const status = state.progress[wordId] || 'none';
-            els.statusBtns.forEach(btn => {
-                const btnStatus = btn.dataset.status;
-                const dot = btn.querySelector('div');
-                const text = btn.querySelector('span');
-                
-                if (btnStatus === status) {
-                    btn.classList.add('bg-white', 'shadow-sm');
-                    dot.classList.remove('opacity-40');
-                    text.classList.replace('text-gray-400', 'text-gray-800');
-                } else {
-                    btn.classList.remove('bg-white', 'shadow-sm');
-                    dot.classList.add('opacity-40');
-                    text.classList.replace('text-gray-800', 'text-gray-400');
-                }
-            });
-        }
-
-        function updateStats() {
-            const counts = { none: 0, weak: 0, good: 0, perfect: 0 };
-            state.words.forEach(word => {
-                const status = state.progress[word.id] || 'none';
-                counts[status] = (counts[status] || 0) + 1;
-            });
-
-            els.statNone.textContent = counts.none;
-            els.statWeak.textContent = counts.weak;
-            els.statGood.textContent = counts.good;
-            els.statPerfect.textContent = counts.perfect;
-        }
-
-        // --- 6. 操作ロジック ---
-        function flipCard() {
-            state.isFlipped = !state.isFlipped;
-            els.card.classList.toggle('is-flipped');
-        }
-
-        function cardBaseTransform() {
-            return state.isFlipped ? 'rotateY(180deg)' : '';
-        }
-
-        function setCardOffset(offsetX) {
-            const rotate = Math.max(-7, Math.min(7, offsetX / 18));
-            const base = cardBaseTransform();
-            els.card.style.transform = `${base} translateX(${offsetX}px) rotateZ(${rotate}deg)`.trim();
-        }
-
-        function resetCardOffset() {
-            els.card.classList.remove('is-dragging');
-            els.card.style.transform = cardBaseTransform();
-            setTimeout(() => {
-                els.card.style.transform = '';
-            }, 180);
-        }
-
-        function nextCard() {
-            if (state.currentIndex < state.displayWords.length - 1) {
-                state.currentIndex++;
-                saveCurrentIndex();
-                renderCard();
-            } else {
-                // 最後まで行ったら軽く振動するようなエフェクト
-                els.card.style.transform = state.isFlipped ? 'rotateY(180deg) translateX(10px)' : 'translateX(-10px)';
-                setTimeout(() => {
-                    els.card.style.transform = state.isFlipped ? 'rotateY(180deg)' : '';
-                }, 200);
-            }
-        }
-
-        function prevCard() {
-            if (state.currentIndex > 0) {
-                state.currentIndex--;
-                saveCurrentIndex();
-                renderCard();
-            }
-        }
-
-        function setStatus(status) {
-            const currentWord = state.displayWords[state.currentIndex];
-            state.progress[currentWord.id] = status;
-            saveProgress();
-            updateStatusButtons(currentWord.id);
-            updateStats();
-
-            if (state.settings.autoAdvance) {
-                setTimeout(nextCard, 180);
-            }
-        }
-
-        // --- 7. 音声読み上げ ---
-        let availableVoices = [];
-        
-        function loadVoices() {
-            availableVoices = speechSynthesis.getVoices();
-        }
-
-        // デバイスの利用可能な音声リストを事前に取得しておく
-        if ('speechSynthesis' in window) {
-            loadVoices();
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = loadVoices;
-            }
-        }
-
-        function speak(text) {
-            if (!('speechSynthesis' in window)) {
-                console.warn('Web Speech API is not supported in this browser.');
-                return;
-            }
-            // 実行中の音声をキャンセル
-            speechSynthesis.cancel();
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.85; // 少しゆっくりめに調整して明瞭に
-            utterance.pitch = 1.0;
-            
-            // デバイスの言語設定によって日本語等の音声が選ばれるのを防ぐ
-            // 優先的に高品質なネイティブ音声（Premium, Enhanced, Google, Samantha等）を探す
-            if (availableVoices.length > 0) {
-                const preferredVoices = availableVoices.filter(voice => 
-                    voice.lang.startsWith('en-') && (
-                        voice.name.includes('Premium') || 
-                        voice.name.includes('Enhanced') ||
-                        voice.name.includes('Google') ||
-                        voice.name.includes('Samantha') ||
-                        voice.name.includes('Daniel')
-                    )
-                );
-
-                if (preferredVoices.length > 0) {
-                    utterance.voice = preferredVoices[0];
-                } else {
-                    const englishVoice = availableVoices.find(voice => 
-                        voice.lang.startsWith('en-US') || 
-                        voice.lang.startsWith('en-GB')
-                    );
-                    if (englishVoice) {
-                        utterance.voice = englishVoice;
-                    }
-                }
-            }
-            
-            // iPhoneで音声が鳴らない対策用
-            speechSynthesis.speak(utterance);
-        }
-
-        // --- 8. モーダル制御 ---
-        function openSettings() {
-            els.modalSettings.classList.remove('hidden');
-            els.modalSettings.classList.add('flex');
-            // 少し遅らせてアニメーション
-            setTimeout(() => {
-                els.modalContent.classList.remove('translate-y-full');
-            }, 10);
-        }
-
-        function closeSettings() {
-            els.modalContent.classList.add('translate-y-full');
-            setTimeout(() => {
-                els.modalSettings.classList.add('hidden');
-                els.modalSettings.classList.remove('flex');
-            }, 300);
-        }
-
-        // --- 9. CSVインポート (簡易実装) ---
-        function parseCSVLine(line) {
-            const cells = [];
-            let current = '';
-            let inQuotes = false;
-
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                const nextChar = line[i + 1];
-
-                if (char === '"' && inQuotes && nextChar === '"') {
-                    current += '"';
-                    i++;
-                } else if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    cells.push(current.trim());
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-
-            cells.push(current.trim());
-            return cells;
-        }
-
-        function csvEscape(value) {
-            const text = String(value ?? '');
-            if (/[",\n]/.test(text)) {
-                return `"${text.replace(/"/g, '""')}"`;
-            }
-            return text;
-        }
-
-        function exportCSV() {
-            const header = ['word', 'partOfSpeech', 'meaningJa', 'coreImageText', 'exampleEn', 'exampleJa', 'imagePrompt', 'imagePath', 'status'];
-            const rows = state.words.map(word => [
-                word.word,
-                word.partOfSpeech,
-                word.meaningJa,
-                word.coreImageText,
-                word.exampleEn,
-                word.exampleJa,
-                word.imagePrompt || '',
-                word.imagePath || '',
-                state.progress[word.id] || 'none'
-            ].map(csvEscape).join(','));
-
-            const csv = [header.join(','), ...rows].join('\n');
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `core-vocab-${new Date().toISOString().slice(0, 10)}.csv`;
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function resetProgress() {
-            const confirmed = confirm('すべての理解度を未学習に戻しますか？');
-            if (!confirmed) return;
-
-            state.progress = {};
-            saveProgress();
-            updateDisplayList();
-            renderCard();
-        }
-
-        function handleCSVUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const text = e.target.result;
-                const lines = text.split('\n');
-                let newWordsCount = 0;
-
-                // ヘッダ行をスキップ (i=1から)
-                for (let i = 1; i < lines.length; i++) {
-                    if (!lines[i].trim()) continue;
-                    
-                    const data = parseCSVLine(lines[i]);
-                    if (data.length >= 6) {
-                        const hasImagePromptColumn = data.length >= 8;
-                        const statusValue = hasImagePromptColumn ? data[8] : data[7];
-                        const newWord = {
-                            id: Date.now() + i, // 簡易的なユニークID
-                            word: data[0],
-                            partOfSpeech: data[1],
-                            meaningJa: data[2],
-                            coreImageText: data[3],
-                            exampleEn: data[4],
-                            exampleJa: data[5],
-                            imagePrompt: hasImagePromptColumn ? (data[6] || "") : "",
-                            imagePath: hasImagePromptColumn ? (data[7] || "") : (data[6] || "")
-                        };
-                        state.words.push(newWord);
-                        if (statusValue && ['none', 'weak', 'good', 'perfect'].includes(statusValue)) {
-                            state.progress[newWord.id] = statusValue;
-                        }
-                        newWordsCount++;
-                    }
-                }
-
-                if (newWordsCount > 0) {
-                    storage.set('vocab_words', JSON.stringify(state.words));
-                    saveProgress();
-                    alert(`${newWordsCount}件の単語を追加しました！`);
-                    updateDisplayList();
-                    renderCard();
-                } else {
-                    alert('CSVフォーマットが正しくないか、データがありません。');
-                }
-                els.csvUpload.value = ''; // リセット
-            };
-            reader.readAsText(file);
-        }
-
-        // --- 10. イベントリスナー設定 ---
-        function setupEventListeners() {
-            let suppressNextClick = false;
-
-            // カードタップでめくる（ボタン類以外をタップした時）
-            els.card.addEventListener('click', (e) => {
-                if (suppressNextClick) {
-                    suppressNextClick = false;
-                    return;
-                }
-                if (!e.target.closest('button')) {
-                    flipCard();
-                }
-            });
-            
-            // 音声
-            els.btnSpeakWord.addEventListener('click', (e) => {
-                e.stopPropagation();
-                speak(state.displayWords[state.currentIndex].word);
-            });
-            els.btnSpeakEx.addEventListener('click', (e) => {
-                e.stopPropagation();
-                speak(state.displayWords[state.currentIndex].exampleEn);
-            });
-
-            // 理解度ボタン
-            els.statusBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    setStatus(btn.dataset.status);
-                });
-            });
-
-            // 設定モーダル
-            els.btnSettings.addEventListener('click', openSettings);
-            els.btnCloseSettings.addEventListener('click', closeSettings);
-            els.modalSettings.addEventListener('click', (e) => {
-                if(e.target === els.modalSettings) closeSettings();
-            });
-
-            // フィルターボタン
-            els.filterBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const status = btn.dataset.filter;
-                    const currentValue = state.settings.filters[status];
-                    
-                    // すべてOFFになるのを防ぐ
-                    if (currentValue) {
-                        const activeCount = Object.values(state.settings.filters).filter(v => v).length;
-                        if (activeCount <= 1) {
-                            alert('少なくとも1つの状態を選択してください。');
-                            return;
-                        }
-                    }
-                    
-                    state.settings.filters[status] = !currentValue;
-                    saveSettings();
-                    updateFilterUI();
-                    updateDisplayList();
-                    renderCard();
-                });
-            });
-
-            // 設定トグル
-            els.toggleShuffle.addEventListener('change', (e) => {
-                state.settings.shuffle = e.target.checked;
-                saveSettings();
-                updateDisplayList();
-                renderCard();
-            });
-            
-            els.toggleImage.addEventListener('change', (e) => {
-                state.settings.showImage = e.target.checked;
-                saveSettings();
-                applySettings();
-            });
-
-            els.toggleAutoAdvance.addEventListener('change', (e) => {
-                state.settings.autoAdvance = e.target.checked;
-                saveSettings();
-            });
-
-            // CSV
-            els.csvUpload.addEventListener('change', handleCSVUpload);
-            els.btnExportCsv.addEventListener('click', exportCSV);
-            els.btnResetProgress.addEventListener('click', resetProgress);
-
-            // キーボード操作 (PC用)
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowRight') nextCard();
-                if (e.key === 'ArrowLeft') prevCard();
-                if (e.key === ' ' || e.key === 'Spacebar') {
-                    e.preventDefault(); // スクロール防止
-                    flipCard();
-                }
-            });
-            
-            function finishSwipe(diffX) {
-                if (diffX < -50) {
-                    suppressNextClick = true;
-                    nextCard(); // 左スワイプで次へ
-                } else if (diffX > 50) {
-                    suppressNextClick = true;
-                    prevCard(); // 右スワイプで前へ
-                } else {
-                    resetCardOffset();
-                }
-            }
-
-            // スワイプ操作 (モバイル用)
-            let touchStartX = 0;
-            let touchStartY = 0;
-            let isSwiping = false;
-            els.card.addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
-                touchStartY = e.changedTouches[0].screenY;
-                isSwiping = false;
-            }, {passive: true});
-
-            els.card.addEventListener('touchmove', e => {
-                const touch = e.changedTouches[0];
-                const diffX = touch.screenX - touchStartX;
-                const diffY = touch.screenY - touchStartY;
-
-                if (Math.abs(diffX) > 12 && Math.abs(diffX) > Math.abs(diffY) * 1.25) {
-                    isSwiping = true;
-                    els.card.classList.add('is-dragging');
-                    setCardOffset(Math.max(-42, Math.min(42, diffX * 0.28)));
-                }
-            }, {passive: true});
-            
-            els.card.addEventListener('touchend', e => {
-                const touchEndX = e.changedTouches[0].screenX;
-                const diffX = touchEndX - touchStartX;
-                
-                if (isSwiping || Math.abs(diffX) > 50) {
-                    finishSwipe(diffX);
-                }
-                isSwiping = false;
-            }, {passive: true});
-
-            // PCプレビュー用。スマホのタッチ操作とは二重発火しないようにmouse/penだけ扱う。
-            let pointerStartX = 0;
-            let pointerStartY = 0;
-            let pointerActive = false;
-            els.card.addEventListener('pointerdown', e => {
-                if (e.pointerType === 'touch') return;
-                pointerStartX = e.clientX;
-                pointerStartY = e.clientY;
-                pointerActive = true;
-                els.card.setPointerCapture?.(e.pointerId);
-            });
-
-            els.card.addEventListener('pointermove', e => {
-                if (!pointerActive || e.pointerType === 'touch') return;
-
-                const diffX = e.clientX - pointerStartX;
-                const diffY = e.clientY - pointerStartY;
-                if (Math.abs(diffX) > 12 && Math.abs(diffX) > Math.abs(diffY) * 1.25) {
-                    els.card.classList.add('is-dragging');
-                    setCardOffset(Math.max(-42, Math.min(42, diffX * 0.28)));
-                }
-            });
-
-            els.card.addEventListener('pointerup', e => {
-                if (!pointerActive || e.pointerType === 'touch') return;
-
-                pointerActive = false;
-                finishSwipe(e.clientX - pointerStartX);
-            });
-        }
-
-        // アプリ起動
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                init();
-            } catch (error) {
-                console.error('App initialization failed:', error);
-                document.body.innerHTML = `
-                    <div style="min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f2f7;color:#1c1c1e;">
-                        <div style="max-width:360px;background:#fff;border-radius:24px;padding:24px;box-shadow:0 16px 40px rgba(0,0,0,.08);">
-                            <h1 style="font-size:20px;margin:0 0 8px;">Preview error</h1>
-                            <p style="font-size:14px;line-height:1.6;color:#636366;margin:0;">アプリの初期化でエラーが発生しました。ブラウザのコンソールを確認してください。</p>
-                        </div>
-                    </div>
-                `;
-            }
-        });
-
-    </script>
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
 </body>
 </html>
