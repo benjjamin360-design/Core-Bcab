@@ -193,6 +193,15 @@
       transform: rotate(34deg);
       position: absolute;
     }
+    .visual-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    .visual.has-image::before,
+    .visual.has-image .letter { display: none; }
+    .visual.has-image .visual-image { display: block; }
     .visual .letter {
       font-size: clamp(54px, 18vw, 86px);
       font-weight: 800;
@@ -213,6 +222,7 @@
       color: #374151;
       font-size: 11px;
       font-weight: 800;
+      z-index: 2;
       z-index: 2;
     }
     .front-main {
@@ -470,6 +480,7 @@
         <div id="flashcard" class="flashcard">
           <article class="face front">
             <div id="visual" class="visual">
+              <img id="visualImage" class="visual-image" alt="" decoding="async">
               <span id="categoryBadge" class="category-badge">Basic</span>
               <span id="letter" class="letter">O</span>
             </div>
@@ -683,13 +694,17 @@
     const statusLabels = { none: "未学習", weak: "苦手", good: "理解", perfect: "定着" };
     const statusColors = { none: "#cbd5e1", weak: "#ef4444", good: "#f59e0b", perfect: "#1f9d55" };
     const categoryColors = ["#dbeafe,#dcfce7,#fef3c7", "#ede9fe,#cffafe,#fce7f3", "#e0f2fe,#fef9c3,#dcfce7", "#fae8ff,#dbeafe,#fee2e2", "#ecfccb,#fef3c7,#e0e7ff"];
+    const wordImages = Object.fromEntries(seedWords.map(({ word }) => {
+      const slug = word.toLowerCase().replace(/\s+/g, "-");
+      return [word.toLowerCase(), `20260720_core-vocab-images/20260720_${slug}-core-image-concrete.png`];
+    }));
 
     const $ = (id) => document.getElementById(id);
     const els = {
       subtitle: $("subtitle"), progressText: $("progressText"), searchInput: $("searchInput"), categorySelect: $("categorySelect"),
       settingsBtn: $("settingsBtn"), settingsModal: $("settingsModal"), closeSettingsBtn: $("closeSettingsBtn"),
       cardView: $("cardView"), quizView: $("quizView"), statsView: $("statsView"), flashcard: $("flashcard"),
-      visual: $("visual"), categoryBadge: $("categoryBadge"), letter: $("letter"), word: $("word"), pos: $("pos"),
+      visual: $("visual"), visualImage: $("visualImage"), categoryBadge: $("categoryBadge"), letter: $("letter"), word: $("word"), pos: $("pos"),
       wordBack: $("wordBack"), meaning: $("meaning"), core: $("core"), exampleEn: $("exampleEn"), exampleJa: $("exampleJa"), note: $("note"),
       speakWordBtn: $("speakWordBtn"), speakExampleBtn: $("speakExampleBtn"), prevBtn: $("prevBtn"), nextBtn: $("nextBtn"),
       statusBtns: document.querySelectorAll(".status-btn"), tabs: document.querySelectorAll(".tab"), filterBtns: document.querySelectorAll(".chip"),
@@ -807,6 +822,12 @@
       els.categoryBadge.textContent = word.category || "Other";
       const colorSet = categoryColors[Math.abs(hash(word.category || word.word)) % categoryColors.length].split(",");
       els.visual.style.background = `linear-gradient(135deg, ${colorSet[0]}, ${colorSet[1]} 52%, ${colorSet[2]})`;
+      const imagePath = wordImages[word.word.toLowerCase()];
+      els.visual.classList.toggle("has-image", Boolean(imagePath));
+      els.visualImage.onerror = () => els.visual.classList.remove("has-image");
+      if (imagePath) els.visualImage.src = imagePath;
+      else els.visualImage.removeAttribute("src");
+      els.visualImage.alt = imagePath ? `${word.word} のコアイメージ` : "";
       els.visual.classList.toggle("hidden", !state.settings.showVisual);
       updateStatusButtons();
       resetFlip();
