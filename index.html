@@ -151,68 +151,26 @@
     .card-wrap {
       flex: 1;
       min-height: 0;
-      perspective: 1000px;
       display: flex;
     }
     .flashcard {
       width: 100%;
       min-height: 360px;
       position: relative;
-      transform-style: preserve-3d;
-      transition: transform .5s cubic-bezier(.22, .61, .36, 1);
-    }
-    .flashcard.flipped { transform: rotateY(180deg); }
-    .face {
-      position: absolute;
-      inset: 0;
       border-radius: 18px;
       background: #fff;
       box-shadow: var(--shadow);
-      backface-visibility: hidden;
-      overflow: hidden;
+      overflow-y: auto;
+      padding: 22px;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
+      transition: box-shadow .2s ease, transform .2s ease;
     }
-    .back { transform: rotateY(180deg); }
-    .visual {
-      height: 39%;
-      min-height: 128px;
-      margin: 12px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, #dce8ff, #d9f4e7 52%, #fff1c9);
-    }
-    .visual::before {
-      content: "";
-      width: 120px;
-      height: 120px;
-      border: 2px solid rgba(255,255,255,.54);
-      transform: rotate(34deg);
-      position: absolute;
-    }
-    .visual-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
-    }
-    .visual.has-image::before,
-    .visual.has-image .letter { display: none; }
-    .visual.has-image .visual-image { display: block; }
-    .visual .letter {
-      font-size: clamp(54px, 18vw, 86px);
-      font-weight: 800;
-      color: rgba(255,255,255,.78);
-      text-shadow: 0 10px 30px rgba(42, 61, 94, .22);
-      z-index: 1;
-    }
+    .flashcard:focus-visible { outline: 3px solid rgba(58,119,240,.28); outline-offset: 3px; }
+    .flashcard:active { transform: scale(.997); }
+    .card-topline { display: flex; align-items: center; justify-content: flex-start; }
     .category-badge {
-      position: absolute;
-      left: 12px;
-      top: 12px;
       min-height: 26px;
       padding: 0 9px;
       display: inline-flex;
@@ -222,28 +180,47 @@
       color: #374151;
       font-size: 11px;
       font-weight: 800;
-      z-index: 2;
-      z-index: 2;
+      border: 1px solid var(--line);
     }
-    .front-main {
-      flex: 1;
+    .card-summary {
+      flex: 0 0 270px;
+      height: 270px;
+      min-height: 270px;
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 14px 24px 22px;
-      min-height: 0;
+      padding: 28px 24px 18px;
     }
     .word {
       margin: 0;
+      width: 100%;
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: clamp(31px, 9vw, 42px);
       line-height: 1.05;
       letter-spacing: 0;
       overflow-wrap: anywhere;
     }
-    .pos { margin: 9px 0 0; color: var(--muted); font-size: 13px; font-weight: 800; text-transform: uppercase; }
-    .hint { margin: 18px 0 0; color: #64748b; font-size: 13px; }
+    .word-meta {
+      min-height: 20px;
+      margin: 9px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .ipa { color: #334155; font-family: Georgia, "Times New Roman", serif; font-size: 15px; font-weight: 700; }
+    .meta-separator { color: #cbd5e1; }
+    .pos { font-weight: 800; text-transform: uppercase; }
+    .hint { min-height: 18px; margin: 18px 0 0; color: #64748b; font-size: 13px; }
     .speak {
       margin-top: 20px;
       width: 46px;
@@ -254,12 +231,19 @@
       display: grid;
       place-items: center;
     }
-    .back-scroll {
-      height: 100%;
-      overflow-y: auto;
-      padding: 22px;
+    .answer-panel {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      border-top: 1px solid var(--line);
+      padding-top: 20px;
+      transition: opacity .18s ease;
     }
-    .back h2 { margin: 0; font-size: 25px; text-align: center; letter-spacing: 0; overflow-wrap: anywhere; }
+    .flashcard.answer-open .answer-panel {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
     .meaning { margin: 6px 0 18px; text-align: center; color: var(--blue); font-size: 18px; font-weight: 800; }
     .info-box {
       border: 1px solid var(--line);
@@ -436,9 +420,8 @@
     .hidden { display: none !important; }
     .muted { color: var(--muted); }
     @media (max-height: 710px) {
-      .visual { height: 33%; min-height: 100px; }
       .flashcard { min-height: 300px; }
-      .front-main { padding-bottom: 16px; }
+      .card-summary { flex-basis: 220px; height: 220px; min-height: 220px; padding-bottom: 16px; }
       .hint { margin-top: 10px; }
       .speak { margin-top: 12px; }
     }
@@ -477,46 +460,43 @@
 
     <main class="stage">
       <section id="cardView" class="card-wrap">
-        <div id="flashcard" class="flashcard">
-          <article class="face front">
-            <div id="visual" class="visual">
-              <img id="visualImage" class="visual-image" alt="" decoding="async">
-              <span id="categoryBadge" class="category-badge">Basic</span>
-              <span id="letter" class="letter">O</span>
+        <div id="flashcard" class="flashcard" role="button" tabindex="0" aria-expanded="false">
+          <div class="card-topline">
+            <span id="categoryBadge" class="category-badge">Thinking</span>
+          </div>
+          <div class="card-summary">
+            <h2 id="word" class="word">objective</h2>
+            <p class="word-meta">
+              <span id="ipa" class="ipa">/əbˈdʒek.tɪv/</span>
+              <span class="meta-separator" aria-hidden="true">·</span>
+              <span id="pos" class="pos">adj / noun</span>
+            </p>
+            <p id="answerHint" class="hint">タップで答えを表示</p>
+            <button id="speakWordBtn" class="speak" aria-label="発音">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+            </button>
+          </div>
+          <div id="answerPanel" class="answer-panel" aria-hidden="true">
+            <p id="meaning" class="meaning">客観的な / 目的</p>
+            <div class="info-box">
+              <p class="label">Core Image</p>
+              <p id="core" class="core">感情ではなく、対象そのものをまっすぐ見る。</p>
             </div>
-            <div class="front-main">
-              <h2 id="word" class="word">objective</h2>
-              <p id="pos" class="pos">adjective</p>
-              <p class="hint">タップで意味・コアイメージを確認</p>
-              <button id="speakWordBtn" class="speak" aria-label="発音">
-                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
-              </button>
+            <div class="info-box">
+              <div class="mini-row">
+                <p class="label">Example</p>
+                <button id="speakExampleBtn" class="icon-btn" aria-label="例文を発音">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+                </button>
+              </div>
+              <p id="exampleEn" class="example-en"></p>
+              <p id="exampleJa" class="example-ja"></p>
             </div>
-          </article>
-          <article class="face back">
-            <div class="back-scroll">
-              <h2 id="wordBack">objective</h2>
-              <p id="meaning" class="meaning">客観的な / 目的</p>
-              <div class="info-box">
-                <p class="label">Core Image</p>
-                <p id="core" class="core">感情ではなく、対象そのものをまっすぐ見る。</p>
-              </div>
-              <div class="info-box">
-                <div class="mini-row">
-                  <p class="label">Example</p>
-                  <button id="speakExampleBtn" class="icon-btn" aria-label="例文を発音">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
-                  </button>
-                </div>
-                <p id="exampleEn" class="example-en"></p>
-                <p id="exampleJa" class="example-ja"></p>
-              </div>
-              <div class="info-box">
-                <p class="label">Practical Note</p>
-                <p id="note" class="core"></p>
-              </div>
+            <div class="info-box">
+              <p class="label">Practical Note</p>
+              <p id="note" class="core"></p>
             </div>
-          </article>
+          </div>
         </div>
       </section>
 
@@ -585,13 +565,6 @@
             <small>出題順をランダムにします</small>
           </div>
           <label class="switch"><input id="shuffleToggle" type="checkbox"><span class="slider"></span></label>
-        </div>
-        <div class="setting-block switch-row">
-          <div>
-            <p class="setting-title">コアイメージ表示</p>
-            <small>カード上部のビジュアルを表示します</small>
-          </div>
-          <label class="switch"><input id="visualToggle" type="checkbox" checked><span class="slider"></span></label>
         </div>
         <div class="setting-block">
           <p class="setting-title">データ管理</p>
@@ -671,6 +644,69 @@
       {id:60,word:"result",partOfSpeech:"noun / verb",meaningJa:"結果 / 結果として生じる",coreImageText:"原因や行動のあとに残るもの。",exampleEn:"The result was better than expected.",exampleJa:"結果は予想より良かった。",category:"Academic",note:"as a result はその結果。"}
     ];
 
+    const ipaByWord = {
+      "objective": "/əbˈdʒek.tɪv/",
+      "notice": "/ˈnoʊ.t̬ɪs/",
+      "realize": "/ˈriː.ə.laɪz/",
+      "figure out": "/ˈfɪɡ.jɚ aʊt/",
+      "assume": "/əˈsuːm/",
+      "consider": "/kənˈsɪd.ɚ/",
+      "compare": "/kəmˈper/",
+      "evaluate": "/ɪˈvæl.ju.eɪt/",
+      "identify": "/aɪˈden.t̬ə.faɪ/",
+      "recognize": "/ˈrek.əɡ.naɪz/",
+      "through": "/θruː/",
+      "across": "/əˈkrɑːs/",
+      "toward": "/tɔːrd/",
+      "avoid": "/əˈvɔɪd/",
+      "approach": "/əˈproʊtʃ/",
+      "handle": "/ˈhæn.dəl/",
+      "manage": "/ˈmæn.ɪdʒ/",
+      "improve": "/ɪmˈpruːv/",
+      "develop": "/dɪˈvel.əp/",
+      "maintain": "/meɪnˈteɪn/",
+      "require": "/rɪˈkwaɪr/",
+      "provide": "/prəˈvaɪd/",
+      "support": "/səˈpɔːrt/",
+      "suggest": "/səˈdʒest/",
+      "explain": "/ɪkˈspleɪn/",
+      "describe": "/dɪˈskraɪb/",
+      "mention": "/ˈmen.ʃən/",
+      "confirm": "/kənˈfɝːm/",
+      "clarify": "/ˈkler.ə.faɪ/",
+      "request": "/rɪˈkwest/",
+      "available": "/əˈveɪ.lə.bəl/",
+      "specific": "/spəˈsɪf.ɪk/",
+      "general": "/ˈdʒen.ɚ.əl/",
+      "similar": "/ˈsɪm.ə.lɚ/",
+      "common": "/ˈkɑː.mən/",
+      "likely": "/ˈlaɪ.kli/",
+      "possible": "/ˈpɑː.sə.bəl/",
+      "necessary": "/ˈnes.ə.ser.i/",
+      "effective": "/ɪˈfek.tɪv/",
+      "efficient": "/ɪˈfɪʃ.ənt/",
+      "accurate": "/ˈæk.jɚ.ət/",
+      "reliable": "/rɪˈlaɪ.ə.bəl/",
+      "flexible": "/ˈflek.sə.bəl/",
+      "benefit": "/ˈben.ə.fɪt/",
+      "challenge": "/ˈtʃæl.ɪndʒ/",
+      "opportunity": "/ˌɑː.pɚˈtuː.nə.t̬i/",
+      "priority": "/praɪˈɔːr.ə.t̬i/",
+      "deadline": "/ˈded.laɪn/",
+      "issue": "/ˈɪʃ.uː/",
+      "solution": "/səˈluː.ʃən/",
+      "process": "/ˈprɑː.ses/",
+      "resource": "/ˈriː.sɔːrs/",
+      "feature": "/ˈfiː.tʃɚ/",
+      "update": "/ʌpˈdeɪt/",
+      "access": "/ˈæk.ses/",
+      "secure": "/sɪˈkjʊr/",
+      "reduce": "/rɪˈduːs/",
+      "increase": "/ɪnˈkriːs/",
+      "affect": "/əˈfekt/",
+      "result": "/rɪˈzʌlt/"
+    };
+
     const store = {
       words: "core_vocab_practical_words_v1",
       progress: "core_vocab_practical_progress_v1",
@@ -678,14 +714,13 @@
     };
     const defaultSettings = {
       shuffle: false,
-      showVisual: true,
       filters: { none: true, weak: true, good: true, perfect: true }
     };
     const state = {
       words: [],
       displayWords: [],
       currentIndex: 0,
-      isFlipped: false,
+      isAnswerVisible: false,
       currentView: "card",
       progress: {},
       settings: structuredClone(defaultSettings),
@@ -693,22 +728,17 @@
     };
     const statusLabels = { none: "未学習", weak: "苦手", good: "理解", perfect: "定着" };
     const statusColors = { none: "#cbd5e1", weak: "#ef4444", good: "#f59e0b", perfect: "#1f9d55" };
-    const categoryColors = ["#dbeafe,#dcfce7,#fef3c7", "#ede9fe,#cffafe,#fce7f3", "#e0f2fe,#fef9c3,#dcfce7", "#fae8ff,#dbeafe,#fee2e2", "#ecfccb,#fef3c7,#e0e7ff"];
-    const wordImages = Object.fromEntries(seedWords.map(({ word }) => {
-      const slug = word.toLowerCase().replace(/\s+/g, "-");
-      return [word.toLowerCase(), `20260720_core-vocab-images/20260720_${slug}-core-image-concrete.webp`];
-    }));
 
     const $ = (id) => document.getElementById(id);
     const els = {
       subtitle: $("subtitle"), progressText: $("progressText"), searchInput: $("searchInput"), categorySelect: $("categorySelect"),
       settingsBtn: $("settingsBtn"), settingsModal: $("settingsModal"), closeSettingsBtn: $("closeSettingsBtn"),
       cardView: $("cardView"), quizView: $("quizView"), statsView: $("statsView"), flashcard: $("flashcard"),
-      visual: $("visual"), visualImage: $("visualImage"), categoryBadge: $("categoryBadge"), letter: $("letter"), word: $("word"), pos: $("pos"),
-      wordBack: $("wordBack"), meaning: $("meaning"), core: $("core"), exampleEn: $("exampleEn"), exampleJa: $("exampleJa"), note: $("note"),
+      categoryBadge: $("categoryBadge"), word: $("word"), ipa: $("ipa"), pos: $("pos"), answerHint: $("answerHint"), answerPanel: $("answerPanel"),
+      meaning: $("meaning"), core: $("core"), exampleEn: $("exampleEn"), exampleJa: $("exampleJa"), note: $("note"),
       speakWordBtn: $("speakWordBtn"), speakExampleBtn: $("speakExampleBtn"), prevBtn: $("prevBtn"), nextBtn: $("nextBtn"),
       statusBtns: document.querySelectorAll(".status-btn"), tabs: document.querySelectorAll(".tab"), filterBtns: document.querySelectorAll(".chip"),
-      shuffleToggle: $("shuffleToggle"), visualToggle: $("visualToggle"), csvInput: $("csvInput"), exportBtn: $("exportBtn"), resetProgressBtn: $("resetProgressBtn"),
+      shuffleToggle: $("shuffleToggle"), csvInput: $("csvInput"), exportBtn: $("exportBtn"), resetProgressBtn: $("resetProgressBtn"),
       quizWord: $("quizWord"), quizPos: $("quizPos"), choices: $("choices"), quizResult: $("quizResult"), nextQuizBtn: $("nextQuizBtn"),
       statTotal: $("statTotal"), statDone: $("statDone"), statWeak: $("statWeak"), statPerfect: $("statPerfect"), progressBar: $("progressBar"), statsSummary: $("statsSummary"), wordList: $("wordList")
     };
@@ -758,9 +788,13 @@
       const category = els.categorySelect.value;
       return state.words.filter(word => {
         const status = state.progress[word.id] || "none";
-        const text = [word.word, word.meaningJa, word.coreImageText, word.exampleEn, word.exampleJa, word.category, word.note].join(" ").toLowerCase();
+        const text = [word.word, getIpa(word), word.meaningJa, word.coreImageText, word.exampleEn, word.exampleJa, word.category, word.note].join(" ").toLowerCase();
         return state.settings.filters[status] && (category === "all" || word.category === category) && (!query || text.includes(query));
       });
+    }
+
+    function getIpa(word) {
+      return word.ipa || ipaByWord[String(word.word || "").toLowerCase()] || "—";
     }
 
     function updateDisplayList(resetIndex = true) {
@@ -806,40 +840,37 @@
       els.progressText.textContent = word ? `${state.currentIndex + 1} / ${state.displayWords.length}` : "0 / 0";
       if (!word) {
         els.word.textContent = "No cards";
+        els.ipa.textContent = "—";
         els.pos.textContent = "条件を変更してください";
-        els.letter.textContent = "-";
+        els.categoryBadge.textContent = "Empty";
+        setAnswerVisible(false);
         return;
       }
       els.word.textContent = word.word;
+      els.ipa.textContent = getIpa(word);
       els.pos.textContent = word.partOfSpeech;
-      els.wordBack.textContent = word.word;
       els.meaning.textContent = word.meaningJa;
       els.core.textContent = word.coreImageText;
       els.exampleEn.textContent = `"${word.exampleEn}"`;
       els.exampleJa.textContent = word.exampleJa;
       els.note.textContent = word.note || "実際の会話や仕事で使う場面を想像しながら覚える。";
-      els.letter.textContent = word.word.charAt(0).toUpperCase();
       els.categoryBadge.textContent = word.category || "Other";
-      const colorSet = categoryColors[Math.abs(hash(word.category || word.word)) % categoryColors.length].split(",");
-      els.visual.style.background = `linear-gradient(135deg, ${colorSet[0]}, ${colorSet[1]} 52%, ${colorSet[2]})`;
-      const imagePath = wordImages[word.word.toLowerCase()];
-      els.visual.classList.toggle("has-image", Boolean(imagePath));
-      els.visualImage.onerror = () => els.visual.classList.remove("has-image");
-      if (imagePath) els.visualImage.src = imagePath;
-      else els.visualImage.removeAttribute("src");
-      els.visualImage.alt = imagePath ? `${word.word} のコアイメージ` : "";
-      els.visual.classList.toggle("hidden", !state.settings.showVisual);
       updateStatusButtons();
-      resetFlip();
+      setAnswerVisible(false);
     }
 
-    function hash(text) {
-      return [...text].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+    function setAnswerVisible(visible) {
+      state.isAnswerVisible = visible;
+      els.flashcard.classList.toggle("answer-open", visible);
+      els.flashcard.setAttribute("aria-expanded", String(visible));
+      els.answerPanel.setAttribute("aria-hidden", String(!visible));
+      els.answerHint.textContent = visible ? "タップで答えを隠す" : "タップで答えを表示";
+      els.flashcard.scrollTop = 0;
     }
 
-    function resetFlip() {
-      state.isFlipped = false;
-      els.flashcard.classList.remove("flipped");
+    function toggleAnswer() {
+      if (!currentWord()) return;
+      setAnswerVisible(!state.isAnswerVisible);
     }
 
     function updateStatusButtons() {
@@ -974,7 +1005,6 @@
 
     function applySettingsToControls() {
       els.shuffleToggle.checked = state.settings.shuffle;
-      els.visualToggle.checked = state.settings.showVisual;
       els.filterBtns.forEach(btn => btn.classList.toggle("active", !!state.settings.filters[btn.dataset.filter]));
     }
 
@@ -1054,8 +1084,7 @@
     function bindEvents() {
       els.flashcard.addEventListener("click", event => {
         if (event.target.closest("button")) return;
-        state.isFlipped = !state.isFlipped;
-        els.flashcard.classList.toggle("flipped");
+        toggleAnswer();
       });
       els.speakWordBtn.addEventListener("click", event => { event.stopPropagation(); speak(currentWord()?.word); });
       els.speakExampleBtn.addEventListener("click", event => { event.stopPropagation(); speak(currentWord()?.exampleEn); });
@@ -1086,11 +1115,6 @@
         updateDisplayList();
         renderAll();
       });
-      els.visualToggle.addEventListener("change", () => {
-        state.settings.showVisual = els.visualToggle.checked;
-        saveSettings();
-        renderCard();
-      });
       els.exportBtn.addEventListener("click", exportCsv);
       els.csvInput.addEventListener("change", importCsv);
       els.resetProgressBtn.addEventListener("click", () => {
@@ -1103,10 +1127,9 @@
       document.addEventListener("keydown", event => {
         if (event.key === "ArrowRight") nextCard();
         if (event.key === "ArrowLeft") prevCard();
-        if (event.key === " " && state.currentView === "card") {
+        if ((event.key === " " || event.key === "Enter") && state.currentView === "card" && !event.target.matches("input, select, button")) {
           event.preventDefault();
-          state.isFlipped = !state.isFlipped;
-          els.flashcard.classList.toggle("flipped");
+          toggleAnswer();
         }
       });
       let startX = 0;
